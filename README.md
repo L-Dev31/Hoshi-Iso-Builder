@@ -1,5 +1,5 @@
-![icon](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/bbda3c74-487b-413a-b1d4-69e9f31cda27)
-Hoshi v0.1 - System by Humming Owl, Design by L-Dev
+![icon](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/bbda3c74-487b-413a-b1d4-69e9f31cda27) Hoshi v0.1 - System by Humming Owl, Design by L-Dev
+
 Guide : 
 
 ![riivolution_icon](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/28e87402-ae58-4a58-97f0-899cf208c229)
