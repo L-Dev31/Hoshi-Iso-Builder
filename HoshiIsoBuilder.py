@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 import webbrowser
+import json
 
 def start_building():
     destination_path = file_paths["Destination Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
@@ -85,6 +86,34 @@ def set_theme(theme):
 def open_github_io(url):
     webbrowser.open(url)
 
+def save_settings():
+    settings = {
+        "riivolution_file": file_paths["Riivolution file (.xml)"].get("1.0", tk.END).strip(),
+        "riivolution_folder": file_paths["Riivolution patch folder"].get("1.0", tk.END).strip(),
+        "custom_code_folder": file_paths["Custom code folder"].get("1.0", tk.END).strip(),
+        "base_rom_file": file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip(),
+        "destination_path": file_paths["Destination Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
+
+    }
+
+    save_path = filedialog.asksaveasfilename(defaultextension=".hos", filetypes=[("HOS files", "*.hos")])
+    if save_path:
+        with open(save_path, "w") as save_file:
+            json.dump(settings, save_file)
+        print(f"Settings saved to: {save_path}")
+
+def import_settings():
+    import_path = filedialog.askopenfilename(filetypes=[("HOS files", "*.hos")])
+    if import_path:
+        with open(import_path, "r") as import_file:
+            settings = json.load(import_file)
+
+        # Update GUI with imported settings
+        for param, value in settings.items():
+            update_file_path(param, value)
+
+        print(f"Settings imported from: {import_path}")
+
 root = tk.Tk()
 root.title("Hoshi Iso Builder")
 root.geometry("500x550")
@@ -138,8 +167,8 @@ for lang in language_options:
     language_menu.add_command(label=lang, command=lambda lang=lang: print(f"Language set to {lang}"))
 
 save_menu = tk.Menu(menu_bar, tearoff=0)
-save_menu.add_command(label="Save settings as..")
-save_menu.add_command(label="Import settings")
+save_menu.add_command(label="Save settings as..", command=save_settings)
+save_menu.add_command(label="Import settings", command=import_settings)
 
 about_menu = tk.Menu(menu_bar, tearoff=0)
 about_menu.add_command(label="UI design by L-DEV (Léo TOSKU)", command=lambda: open_github_io("https://github.com/L-Dev31"))
