@@ -180,8 +180,8 @@ save_menu.add_command(label="Import settings", command=import_settings)
 
 about_menu = tk.Menu(menu_bar, tearoff=0)
 about_menu.add_command(label="UI design by L-DEV (Léo TOSKU)", command=lambda: open_github_io("https://github.com/L-Dev31"))
-about_menu.add_command(label="System programming by Humming Owl", command=lambda: open_github_io("https://system-programming.github.io"))
-about_menu.add_command(label="Wit by Wimm (Dirk CLEMENS)", command=lambda: open_github_io("https://github.com/Wiimm"))
+about_menu.add_command(label="System programming by Humming Owl", command=lambda: open_github_io("https://github.com/Humming-Owl/"))
+about_menu.add_command(label="Wit by Wimm", command=lambda: open_github_io("https://github.com/Wiimm"))
 
 menu_bar.add_cascade(label="File", menu=save_menu)
 menu_bar.add_cascade(label="Theme", menu=theme_menu)
