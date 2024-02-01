@@ -1,4 +1,4 @@
-![icon](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/bbda3c74-487b-413a-b1d4-69e9f31cda27) Hoshi v0.1 - System by Humming Owl, Design by L-Dev
+Hoshi v0.1 - System by Humming Owl, Design by L-Dev
 
 Guide : 
 
