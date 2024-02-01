@@ -1,4 +1,4 @@
-Hoshi v0.1 - System by Humming Owl, Design by L-Dev
+**Hoshi v0.1 - System by Humming Owl, Design by L-Dev**
 
 Guide : 
 
