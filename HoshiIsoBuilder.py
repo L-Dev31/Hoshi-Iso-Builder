@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import os
 import webbrowser
 import json
+import time
 
 def start_building():
     start_button.config(text="Processing...")
@@ -54,6 +55,10 @@ def continue_building():
 
     os.system(bat_file_path)
     print(f"Building to: {destination_path}")
+
+    time.sleep(3)
+    messagebox.showinfo("Success", "ROM successfully patched!")
+    start_button.config(text="Start Building !")
 
 
 def open_file(file_type):
