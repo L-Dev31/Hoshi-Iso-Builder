@@ -10,17 +10,37 @@ def start_building():
         return
 
     riivolution_file = file_paths["Riivolution file (.xml)"].get("1.0", tk.END).strip()
+    riivolution_folder = file_paths["Riivolution patch folder"].get("1.0", tk.END).strip()
     custom_code_folder = file_paths["Custom code folder"].get("1.0", tk.END).strip()
 
     if not riivolution_file or not custom_code_folder:
         print("Please select Riivolution file and Custom code folder.")
         return
 
-    bat_content = f'.\\start.exe "{riivolution_file}" "{custom_code_folder}" "{destination_path}" E'
     elements_directory = "Elements"
-
     if not os.path.exists(elements_directory):
         os.makedirs(elements_directory)
+
+    base_rom_file = file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
+
+    if not base_rom_file:
+        print("Please select a Base ROM file.")
+        return
+
+    # Create start.bat content
+    bat_content = f'.\\start.exe "{riivolution_file}" "{custom_code_folder}" "{destination_path}" E\n'
+
+    # Add dolpatch commands
+
+    # Wit conversion
+    bat_content += f'wit extract "{base_rom_file}" ".\\temp"\n'
+
+    # Apply mod patch
+    bat_content += f'xcopy /E /I "{riivolution_folder}" ".\\temp"\n'
+    bat_content += f'xcopy /E /I ".\\temp" ".\\temp\\files"\n'
+
+    # Rebuild ISO/WBFS
+    bat_content += f'wit copy ".\\temp" "{destination_path}"\n'
 
     bat_file_path = os.path.join(elements_directory, "start.bat")
 
@@ -30,13 +50,19 @@ def start_building():
     os.system(bat_file_path)
     print(f"Building to: {destination_path}")
 
+
 def open_file(file_type):
     if file_type == "Riivolution file (.xml)":
         file_path = filedialog.askopenfilename(filetypes=[("Riivolution XML files", "*.xml")])
     elif file_type == "Custom code folder":
         file_path = filedialog.askdirectory()
+    elif file_type == "Riivolution patch folder":
+        file_path = filedialog.askdirectory()
     elif file_type == "Base Rom (.iso .wbfs)":
         file_path = filedialog.askopenfilename(filetypes=[("ISO files", "*.iso"), ("WBFS files", "*.wbfs")])
+    elif file_type == "Destination Rom (.iso .wbfs)":
+        file_path = filedialog.asksaveasfilename(defaultextension=".iso", filetypes=[("ISO files", "*.iso"), ("WBFS files", "*.wbfs")])
+
 
     if file_path:
         print(f"Selected {file_type} file/folder: {file_path}")
@@ -56,9 +82,12 @@ def set_theme(theme):
     footer_frame.config(bg=theme_colors["bg"])
     print(f"Setting theme to {theme}")
 
+def open_github_io(url):
+    webbrowser.open(url)
+
 root = tk.Tk()
 root.title("Hoshi Iso Builder")
-root.geometry("500x470")
+root.geometry("500x550")
 root.resizable(False, False)
 
 icon_image = tk.PhotoImage(file="icon.png")
@@ -77,7 +106,7 @@ title_label.pack(pady=10)
 options_frame = tk.Frame(root, bg=dark_theme["bg"])
 options_frame.pack(pady=10)
 
-file_types = ["Riivolution file (.xml)", "Custom code folder", "Base Rom (.iso .wbfs)", "Destination Rom (.iso .wbfs)"]
+file_types = ["Riivolution file (.xml)", "Riivolution patch folder", "Custom code folder", "Base Rom (.iso .wbfs)", "Destination Rom (.iso .wbfs)"]
 
 file_paths = {}
 
@@ -108,12 +137,19 @@ language_options = ["English", "Français", "日本語", "Русский"]
 for lang in language_options:
     language_menu.add_command(label=lang, command=lambda lang=lang: print(f"Language set to {lang}"))
 
-about_menu = tk.Menu(menu_bar, tearoff=0)
-about_menu.add_command(label="UI design by L-DEV", command=lambda: open_github_io("https://github.com/L-Dev31"))
-about_menu.add_command(label="System programming by Humming Owl", command=lambda: open_github_io("https://system-programming.github.io"))
+save_menu = tk.Menu(menu_bar, tearoff=0)
+save_menu.add_command(label="Save settings as..")
+save_menu.add_command(label="Import settings")
 
+about_menu = tk.Menu(menu_bar, tearoff=0)
+about_menu.add_command(label="UI design by L-DEV (Léo TOSKU)", command=lambda: open_github_io("https://github.com/L-Dev31"))
+about_menu.add_command(label="System programming by Humming Owl", command=lambda: open_github_io("https://system-programming.github.io"))
+about_menu.add_command(label="Wit by Wimm (Dirk CLEMENS)", command=lambda: open_github_io("https://github.com/Wiimm"))
+
+menu_bar.add_cascade(label="File", menu=save_menu)
 menu_bar.add_cascade(label="Theme", menu=theme_menu)
 menu_bar.add_cascade(label="Language", menu=language_menu)
-menu_bar.add_cascade(label="About", menu=about_menu)
+menu_bar.add_cascade(label="Credits", menu=about_menu)
+
 
 root.mainloop()
