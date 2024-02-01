@@ -5,6 +5,11 @@ import webbrowser
 import json
 
 def start_building():
+    start_button.config(text="Processing...")
+    root.update()
+    root.after(3000, continue_building)
+
+def continue_building():
     destination_path = file_paths["Destination Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
     if not destination_path:
         print("Please select a destination ROM file.")
@@ -37,8 +42,7 @@ def start_building():
     bat_content += f'wit extract "{base_rom_file}" ".\\temp"\n'
 
     # Apply mod patch
-    bat_content += f'xcopy /E /I "{riivolution_folder}" ".\\temp"\n'
-    bat_content += f'xcopy /E /I ".\\temp" ".\\temp\\files"\n'
+    bat_content += f'xcopy /E /I "{riivolution_folder}" ".\\temp\\files"\n'
 
     # Rebuild ISO/WBFS
     bat_content += f'wit copy ".\\temp" "{destination_path}"\n'
@@ -88,31 +92,30 @@ def open_github_io(url):
 
 def save_settings():
     settings = {
-        "riivolution_file": file_paths["Riivolution file (.xml)"].get("1.0", tk.END).strip(),
-        "riivolution_folder": file_paths["Riivolution patch folder"].get("1.0", tk.END).strip(),
-        "custom_code_folder": file_paths["Custom code folder"].get("1.0", tk.END).strip(),
-        "base_rom_file": file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip(),
-        "destination_path": file_paths["Destination Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
-
+        "file_paths": {file_type: file_paths[file_type].get("1.0", tk.END).strip() for file_type in file_types},
+        "theme": "Dark" if root.cget("bg") == dark_theme["bg"] else "Light",
     }
 
-    save_path = filedialog.asksaveasfilename(defaultextension=".hos", filetypes=[("HOS files", "*.hos")])
-    if save_path:
-        with open(save_path, "w") as save_file:
-            json.dump(settings, save_file)
-        print(f"Settings saved to: {save_path}")
+    file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+
+    if file_path:
+        with open(file_path, "w") as json_file:
+            json.dump(settings, json_file, indent=4)
+
+        print(f"Settings saved to: {file_path}")
 
 def import_settings():
-    import_path = filedialog.askopenfilename(filetypes=[("HOS files", "*.hos")])
-    if import_path:
-        with open(import_path, "r") as import_file:
-            settings = json.load(import_file)
+    file_path = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
 
-        # Update GUI with imported settings
-        for param, value in settings.items():
-            update_file_path(param, value)
+    if file_path:
+        with open(file_path, "r") as json_file:
+            settings = json.load(json_file)
 
-        print(f"Settings imported from: {import_path}")
+        for file_type in file_types:
+            update_file_path(file_type, settings["file_paths"].get(file_type, ""))
+
+        set_theme(settings["theme"])
+        print(f"Settings imported from: {file_path}")
 
 root = tk.Tk()
 root.title("Hoshi Iso Builder")
