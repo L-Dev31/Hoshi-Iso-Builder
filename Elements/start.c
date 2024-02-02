@@ -5,6 +5,8 @@
 // literally a function to convert riivolution XML files to Gecko Code Lists
 // done fast cuz I am fast as feck boiiiii
 
+// checking if pushing works
+
 typedef uint8_t u1;
 typedef uint32_t u4;
 
