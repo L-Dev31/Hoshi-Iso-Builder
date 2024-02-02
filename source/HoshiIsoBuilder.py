@@ -97,8 +97,7 @@ def open_github_io(url):
 
 def save_settings():
     settings = {
-        "file_paths": {file_type: file_paths[file_type].get("1.0", tk.END).strip() for file_type in file_types},
-        "theme": "Dark" if root.cget("bg") == dark_theme["bg"] else "Light",
+        "file_paths": {file_type: file_paths[file_type].get("1.0", tk.END).strip() for file_type in file_types}
     }
 
     file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
