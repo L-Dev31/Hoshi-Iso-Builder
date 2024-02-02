@@ -28,7 +28,11 @@
 
 **Credits** : 
 **Hoshi v0.1 - System by Humming Owl, Design by L-Dev**
+
 English translations (by L-DEV)
+
 French translations (by L-DEV)
+
 Japanese translations (by )
+
 Russian translations (by )
