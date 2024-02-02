@@ -1,4 +1,3 @@
-**Hoshi v0.1 - System by Humming Owl, Design by L-Dev**
 ![banner](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/3c939bcc-7d6c-466a-ab86-9c565d24d99b)
 
 Guide : 
@@ -20,3 +19,8 @@ Specifications needed: WIT ((https://wit.wiimm.de/)), Python (https://www.python
 5. Set your Output Rom (.iso or .wbfs) path 
 
 6. Click on "Start Building !" and wait for the process to finish 
+
+7. Enjoy !
+
+
+**Hoshi v0.1 - System by Humming Owl, Design by L-Dev**
