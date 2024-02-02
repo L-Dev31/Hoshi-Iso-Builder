@@ -51,7 +51,7 @@ def continue_building():
         return
 
     # Create start.bat content
-    bat_content = f'.\\start.exe "{riivolution_file}" "{custom_code_folder}" "{destination_path}" E\n'
+    bat_content = f'.\\start.exe "{riivolution_file}" "{custom_code_folder}" E\n'
 
     # Add dolpatch commands
 
