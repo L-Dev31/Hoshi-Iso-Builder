@@ -165,6 +165,18 @@ def update_ui_language():
                 "Destination Rom (.iso .wbfs)": "Fichier ROM de destination (.iso .wbfs)",
             }
         },
+        "Deutsch": {
+            "title": "Hoshi v0.1",
+            "start_button": "Start !",
+            "title_label": "Hoshi Iso Builder v0.1",
+            "file_types": {
+                "Riivolution file (.xml)": "Riivolution-Datei (.xml)",
+                "Riivolution patch folder": "Riivolution Patch-Ordner",
+                "Custom code folder": "Custom Code Ordner",
+                "Base Rom (.iso .wbfs)": "Originale ROM (.iso .wbfs)",
+                "Destination Rom (.iso .wbfs)": "Neue ROM (.iso .wbfs)",
+            }
+        },
         "日本語": {
             "title": "星 v0.1",
             "start_button": "ビルドを開始する！",

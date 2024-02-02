@@ -2,7 +2,7 @@
 
 Spanish translations []
 
-German translations []
+German translations [x]
 
 Japanese Translations []
 
