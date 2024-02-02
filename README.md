@@ -33,6 +33,8 @@ English translations (by L-DEV)
 
 French translations (by L-DEV)
 
+German translations (by Bavario)
+
 Japanese translations (by )
 
 Russian translations (by )
