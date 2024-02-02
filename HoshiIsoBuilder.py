@@ -1,19 +1,35 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import os
+import subprocess
 import webbrowser
 import json
 import time
 
+def is_wit_installed():
+    try:
+        subprocess.run(['wit', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+    
 def start_building():
+    is_wit_installed()
     start_button.config(text="Processing...")
     root.update()
-    root.after(3000, continue_building)
+    root.after(100, continue_building)
 
 def continue_building():
+    if not is_wit_installed():
+        messagebox.showerror("Error", "Please install WIT to continue.")
+        start_button.config(text="Start Building !")
+        return
+    
     destination_path = file_paths["Destination Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
     if not destination_path:
         print("Please select a destination ROM file.")
+        messagebox.showerror("Error", "Please fill in all cells")
+        start_button.config(text="Start Building !")
         return
 
     riivolution_file = file_paths["Riivolution file (.xml)"].get("1.0", tk.END).strip()
@@ -88,7 +104,7 @@ def set_theme(theme):
     options_frame.config(bg=theme_colors["bg"])
     for file_type, button in zip(file_types, file_type_buttons):
         file_paths[file_type].config(bg=theme_colors["bg"], fg=theme_colors["fg"])
-        button.config(bg=theme_colors["bg"], fg=theme_colors["fg"])
+        button.config(bg=light_grey, fg="#fff")
     footer_frame.config(bg=theme_colors["bg"])
     print(f"Setting theme to {theme}")
 
@@ -142,11 +158,11 @@ def update_ui_language():
             "start_button": "Démarrer le processus !",
             "title_label": "Compilateur d'Iso, Hoshi v0.1",
             "file_types": {
-                "Riivolution file (.xml)": "Fichier Riivolution XML",
+                "Riivolution file (.xml)": "Fichier Riivolution (.xml))",
                 "Riivolution patch folder": "Dossier du patch Riivolution",
                 "Custom code folder": "Dossier Custom Code",
-                "Base Rom (.iso .wbfs)": "Fichier ROM de base",
-                "Destination Rom (.iso .wbfs)": "Fichier ROM de destination",
+                "Base Rom (.iso .wbfs)": "Fichier ROM de base (.iso .wbfs)",
+                "Destination Rom (.iso .wbfs)": "Fichier ROM de destination (.iso .wbfs)",
             }
         },
         "日本語": {
@@ -219,7 +235,7 @@ file_paths = {}
 file_type_buttons = []  
 
 for file_type in file_types:
-    option_button = tk.Button(options_frame, text=file_type, font=custom_font, bg="#7a7aff", fg="#ffffff", relief=tk.FLAT, command=lambda ft=file_type: open_file(ft))
+    option_button = tk.Button(options_frame, text=file_type, font=custom_font, bg=light_grey, fg="#ffffff", relief=tk.FLAT, command=lambda ft=file_type: open_file(ft))
     option_button.pack(pady=5, fill=tk.X)
     file_type_buttons.append(option_button)
 
@@ -242,7 +258,7 @@ theme_menu.add_command(label="Dark", command=lambda: set_theme("Dark"))
 theme_menu.add_command(label="Light", command=lambda: set_theme("Light"))
 
 language_menu = tk.Menu(menu_bar, tearoff=0)
-language_options = ["English", "Français", "日本語", "Русский"]
+language_options = ["English", "Français", "Deutsch", "日本語", "Русский"]
 for lang in language_options:
     language_menu.add_command(label=lang, command=lambda lang=lang: set_language(lang))
 
