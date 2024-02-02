@@ -3,7 +3,11 @@
 
 Guide : 
 
-Specifications needed: WIT ((https://wit.wiimm.de/)), Python (https://www.python.org/), Tkinter (https://docs.python.org/fr/3/library/tkinter.html)
+Specifications needed:
+
+- WIT ((https://wit.wiimm.de/))
+- Python (https://www.python.org/)
+- Tkinter (https://docs.python.org/fr/3/library/tkinter.html)
 
 ![riivolution_icon](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/28e87402-ae58-4a58-97f0-899cf208c229)
 
