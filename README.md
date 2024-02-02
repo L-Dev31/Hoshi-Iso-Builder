@@ -1,4 +1,5 @@
-![banner](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/3c939bcc-7d6c-466a-ab86-9c565d24d99b)
+![banner](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/c61249c4-5435-47fa-a8ef-f27f7431d00e)
+
 
 Guide : 
 
