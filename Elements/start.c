@@ -18,7 +18,9 @@ int main(int argc, char * argv[])
   // argv[1] XML file
   // argv[2] custom code folder
   
+  printf("Openning riivolution XML: %s\n", argv[1]);
   FILE * fp = fopen(argv[1], "rb");
+  printf("Creating Gecko Code List: codelist.txt\n");
   FILE * cdlist_fp = fopen("codelist.txt", "w");
   
   // variables
@@ -129,6 +131,8 @@ int main(int argc, char * argv[])
             }
             
             // dump loader binary data on codelist.txt
+            printf("Offset %08X: ", offset);
+            printf("Binary file: %s\n", custom_code_folder_path);
             FILE * loader_fp = fopen(custom_code_folder_path, "rb");
             for (int i = 0; (temp1 = fgetc(loader_fp)) != EOF; i++)
             {
@@ -154,16 +158,17 @@ int main(int argc, char * argv[])
             temp = ftell(fp);
             
             // dump value into codelist
+            printf("Offset %08X: Writing hex data...\n", offset);
             for (int i = 0; (temp1 = fgetc(fp)) != '\'' && temp1 != '\"'; i++)
-              {                
-                if (i % 8 == 0 && i != 0)
-                {
-                  fprintf(cdlist_fp, "\n");
-                  offset += 4;
-                  fprintf(cdlist_fp, "%08X ", offset - 0x7C000000);
-                }
-                fprintf(cdlist_fp, "%c", temp1);
+            {
+              if (i % 8 == 0 && i != 0)
+              {
+                fprintf(cdlist_fp, "\n");
+                offset += 4;
+                fprintf(cdlist_fp, "%08X ", offset - 0x7C000000);
               }
+              fprintf(cdlist_fp, "%c", temp1);
+            }
           }
           else
           {
