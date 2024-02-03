@@ -144,7 +144,7 @@ def update_ui_language():
         "English": {
             "title": "Hoshi v0.1",
             "start_button": "Start Building !",
-            "title_label": "Hoshi Iso Builder v0.1",
+            "title_label": "Hoshi ISO Builder v0.1",
             "file_types": {
                 "Riivolution file (.xml)": "Riivolution file (.xml)",
                 "Riivolution patch folder": "Riivolution patch folder",
@@ -156,7 +156,7 @@ def update_ui_language():
         "Français": {
             "title": "Hoshi v0.1",
             "start_button": "Démarrer le processus !",
-            "title_label": "Compilateur d'Iso, Hoshi v0.1",
+            "title_label": "Compilateur d'ISO, Hoshi v0.1",
             "file_types": {
                 "Riivolution file (.xml)": "Fichier Riivolution (.xml))",
                 "Riivolution patch folder": "Dossier du patch Riivolution",
@@ -168,7 +168,7 @@ def update_ui_language():
         "Deutsch": {
             "title": "Hoshi v0.1",
             "start_button": "Start !",
-            "title_label": "Hoshi Iso Builder v0.1",
+            "title_label": "Hoshi ISO Builder v0.1",
             "file_types": {
                 "Riivolution file (.xml)": "Riivolution-Datei (.xml)",
                 "Riivolution patch folder": "Riivolution Patch-Ordner",
@@ -235,7 +235,7 @@ custom_font = ("Helvetica", 12)
 
 root.config(bg=dark_theme["bg"])
 
-title_label = tk.Label(root, text="Hoshi Iso Builder v0.1", font=("Helvetica", 16), **dark_theme)
+title_label = tk.Label(root, text="Hoshi ISO Builder v0.1", font=("Helvetica", 16), **dark_theme)
 title_label.pack(pady=10)
 
 options_frame = tk.Frame(root, bg=dark_theme["bg"])
