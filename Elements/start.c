@@ -2,10 +2,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// define directives
+#define BUFFER_LENGTH 512
+
 // literally a function to convert riivolution XML files to Gecko Code Lists
 // done fast cuz I am fast as feck boiiiii
-
-// checking if pushing works
 
 typedef uint8_t u1;
 typedef uint32_t u4;
@@ -14,39 +15,56 @@ bool compare_strings(void * str1_ptr, void * str2_ptr, u4 last_pos_check);
 
 int main(int argc, char * argv[])
 {
+  // argv[1] XML file
+  // argv[2] custom code folder
+  
   FILE * fp = fopen(argv[1], "rb");
   FILE * cdlist_fp = fopen("codelist.txt", "w");
   
   // variables
+  char region = 0;
+  char reg_tag[] = "region";
   char mem_tag[] = "memory";
-  char mem_tag_read[7] = {0};
+  char reg_mem_tag_read[7] = {0};
   char offset_tag[] = "offset";
   char offset_tag_read[7] = {0};
   char valuefile_tag[] = "valuefile";
   char valuefile_tag_read[10] = {0};
   char value_tag[] = "value";
   char value_tag_read[6] = {0};
+  char custom_code_folder_path[BUFFER_LENGTH] = {0};
   
-  char custom_code_loader_name_1[256] = "CustomCode/Loader";
-  char custom_code_loader_name_1_read[256] = {0};
+  int ccd_str_last_pos = 0;
+  for (int i = 0; argv[2][i] != 0; (ccd_str_last_pos = ++i))
+    custom_code_folder_path[i] = argv[2][i];
+    
+  if (custom_code_folder_path[ccd_str_last_pos] != '/')
+    custom_code_folder_path[ccd_str_last_pos++] = '/';
   
   u4 offset = 0; // to store offset addresses
   // temp var
   u4 temp = 0;
   int temp1 = 0;
-  int temp2 = 0;
-  
+  int temp2 = 0;  
   char ch = 0;
+  
   while ((ch = fgetc(fp)) != EOF)
   {
     // tag reached
     if (ch == '<')
     {
       for (int i = 0; i < 6; i++)
-        mem_tag_read[i] = fgetc(fp);
+        reg_mem_tag_read[i] = fgetc(fp);
+      
+      // get region
+      if (compare_strings(reg_mem_tag_read, reg_tag, 0))
+      {
+        for (int i = 0; (temp1 = fgetc(fp)) != '\'' && temp1 != '\"'; i++);
+          region = fgetc(fp);
+      }
       
       // memory tag reached
-      if (compare_strings(mem_tag_read, mem_tag, 0))
+      if (compare_strings(reg_mem_tag_read, mem_tag, 0))
       {
         // get offset
         ch = fgetc(fp); // space
@@ -87,35 +105,43 @@ int main(int argc, char * argv[])
             // store this position
             temp = ftell(fp);
             
-            // get custom code loader first name part
-            for (int i = 0; i < 17; i++)
-              custom_code_loader_name_1_read[i] = fgetc(fp);
+            // count slashes in valuefile path
+            temp2 = 0;
+            for (int i = 0; (temp1 = fgetc(fp)) != '\'' && temp1 != '\"'; i++)
+              if (temp1 == '/')
+                temp2++;
             
-            // custom code loader name reached!
-            if (compare_strings(custom_code_loader_name_1_read, custom_code_loader_name_1, 0))
+            // get first part of valuefile name
+            fseek(fp, temp, SEEK_SET);
+            for (int i = 0; i < temp2; /**/)
+              if (fgetc(fp) == '/')
+                i++;
+            for (int i = 0; (temp1 = fgetc(fp)) != '\'' && temp1 != '\"'; i++)
             {
-              // complete the name
-              custom_code_loader_name_1_read[17] = argv[2][0];
-              custom_code_loader_name_1_read[18] = '.';
-              custom_code_loader_name_1_read[19] = 'r';
-              custom_code_loader_name_1_read[20] = 'e';
-              custom_code_loader_name_1_read[21] = 'l';
-              
-              // dump loader binary data on codelist.txt
-              FILE * loader_fp = fopen(custom_code_loader_name_1_read, "rb");
-              for (int i = 0; (temp1 = fgetc(loader_fp)) != EOF; i++)
+              if (temp1 == '{')
               {
-                if (i % 4 == 0 && i != 0)
-                {
-                  fprintf(cdlist_fp, "\n");
-                  offset += 4;
-                  fprintf(cdlist_fp, "%08X ", offset - 0x7C000000);
-                }
-                fprintf(cdlist_fp, "%02X", temp1);
+                custom_code_folder_path[ccd_str_last_pos + i] = region;
+                while ((temp1 = fgetc(fp)) != '}');
+                continue;
               }
-              // close loader file
-              fclose(loader_fp);
+              custom_code_folder_path[ccd_str_last_pos + i] = temp1;
+              custom_code_folder_path[ccd_str_last_pos + i + 1] = 0;
             }
+            
+            // dump loader binary data on codelist.txt
+            FILE * loader_fp = fopen(custom_code_folder_path, "rb");
+            for (int i = 0; (temp1 = fgetc(loader_fp)) != EOF; i++)
+            {
+              if (i % 4 == 0 && i != 0)
+              {
+                fprintf(cdlist_fp, "\n");
+                offset += 4;
+                fprintf(cdlist_fp, "%08X ", offset - 0x7C000000);
+              }
+              fprintf(cdlist_fp, "%02X", temp1);
+            }
+            // close loader file
+            fclose(loader_fp);
           }
           // value reached!
           else if (compare_strings(value_tag_read, value_tag, 0))
