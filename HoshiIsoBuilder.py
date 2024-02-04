@@ -256,22 +256,33 @@ class HoshiIsoBuilder:
                 return
 
             # GCT Builder
-            bat_content = f'".\\Elements\\start.exe" "{riivolution_file}" "{custom_code_folder}" E\n'
+            subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, "E"], shell=True)
+
             # Rom Extraction
-            bat_content += f'wit extract "{base_rom_file}" ".\\temp"\n'
-            # Game Patching
-            bat_content += f'xcopy /E /I "{riivolution_folder}" ".\\temp\\files"\n'
-            # Dol Patching
+            subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], shell=True)
+
+            # Destination directory
+            destination_folder = ".\\temp\\files"
+
+            # Patching Rom
+            for root, dirs, files in os.walk(riivolution_folder):
+                for file in files:
+                    src_path = os.path.join(root, file)
+                    relative_path = os.path.relpath(src_path, riivolution_folder)
+                    dest_path = os.path.join(destination_folder, relative_path)
+                    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                    print(f"Copying and replacing: {relative_path}")
+                    shutil.copy2(src_path, dest_path)
+            print("All files copied and replaced.")
+
             # Iso Rebuilding
-            bat_content += f'wit copy ".\\temp" "{destination_path}"\n'
-
-            bat_file_path = os.path.join(elements_directory, "start.bat")
-
-            with open(bat_file_path, "w") as bat_file:
-                bat_file.write(bat_content)
-
-            os.system(bat_file_path)
+            if os.path.exists(destination_path):
+                os.remove(destination_path)
+            subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
+            
+            # Cleaning Files
             os.remove('codelist.txt')
+            os.remove('Elements/start.bat')
             shutil.rmtree('temp')
             time.sleep(3)
             messagebox.showinfo("Success", "ROM successfully patched!")
