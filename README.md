@@ -1,6 +1,7 @@
-![banner](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/c61249c4-5435-47fa-a8ef-f27f7431d00e)
+![banner](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/cd43906a-ec52-4b6c-9076-2db51b6eaf57)
 
-**Specifications needed**:
+**Specifications needed**
+:
 
 - WIT ((https://wit.wiimm.de/))
 - Python (https://www.python.org/)
