@@ -12,7 +12,7 @@ class HoshiIsoBuilder:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Hoshi v0.2")
-        self.root.geometry("500x550")
+        self.root.geometry("500x580")
         self.root.resizable(False, False)
 
         self.menu_bar = None
@@ -26,6 +26,10 @@ class HoshiIsoBuilder:
         icon_photo = ImageTk.PhotoImage(icon_image)
         self.root.iconphoto(True, icon_photo)
 
+        title_image = Image.open("Elements/title.png")
+        title_image = title_image.resize((280, 70), Image.BICUBIC)
+        self.title_texture = ImageTk.PhotoImage(title_image)
+
         self.file_types = ["Riivolution file (.xml)", "Riivolution patch folder", "Custom code folder", "Base Rom (.iso .wbfs)", "Destination Rom (.iso .wbfs)"]
         self.file_paths = {}
         self.file_type_buttons = []
@@ -35,9 +39,7 @@ class HoshiIsoBuilder:
 
         self.translations = {
             "English": {
-                "title": "Hoshi v0.2",
                 "start_button": "Start Building !",
-                "title_label": "Hoshi Iso Builder v0.2",
                 "file_types": {
                     "Riivolution file (.xml)": "Riivolution file (.xml)",
                     "Riivolution patch folder": "Riivolution patch folder",
@@ -66,9 +68,7 @@ class HoshiIsoBuilder:
                 },
             },
             "Français": {
-                "title": "Hoshi v0.2",
                 "start_button": "Démarrer le processus !",
-                "title_label": "Compilateur d'Iso, Hoshi v0.2",
                 "file_types": {
                     "Riivolution file (.xml)": "Fichier Riivolution (.xml))",
                     "Riivolution patch folder": "Dossier du patch Riivolution",
@@ -97,9 +97,7 @@ class HoshiIsoBuilder:
                 },
             },
             "Deutsch": {
-                "title": "Hoshi v0.2",
                 "start_button": "Start !",
-                "title_label": "Hoshi Iso Builder v0.2",
                 "file_types": {
                     "Riivolution file (.xml)": "Riivolution-Datei (.xml)",
                     "Riivolution patch folder": "Riivolution Patch-Ordner",
@@ -128,9 +126,7 @@ class HoshiIsoBuilder:
                 },
             },
             "日本語": {
-                "title": "星 v0.2",
                 "start_button": "ビルドを開始する！",
-                "title_label": "ISOコンパイラ、星 v0.2",
                 "file_types": {
                     "Riivolution file (.xml)": "Riivolution XML ファイル",
                     "Riivolution patch folder": "Riivolution パッチフォルダー",
@@ -159,9 +155,7 @@ class HoshiIsoBuilder:
                 },
             },
             "Русский": {
-                "title": "Hoshi v0.2",
                 "start_button": "Начать строительство !",
-                "title_label": "Компилятор ISO, Hoshi v0.2",
                 "file_types": {
                     "Riivolution file (.xml)": "Файл Riivolution XML",
                     "Riivolution patch folder": "Папка патча Riivolution",
@@ -197,7 +191,8 @@ class HoshiIsoBuilder:
         self.menu_bar = tk.Menu(self.root)
         self.root.config(menu=self.menu_bar)
 
-        self.title_label = tk.Label(self.root, text="Hoshi Iso Builder v0.2", font=("Helvetica", 16), bg=self.dark_theme["bg"], fg=self.dark_theme["fg"])
+        self.title_label = tk.Label(self.root, image=self.title_texture, bg=self.dark_theme["bg"])
+        self.title_label.image = self.title_texture 
         self.title_label.pack(pady=10)
 
         self.root.configure(bg=self.dark_theme["bg"])
@@ -360,8 +355,6 @@ class HoshiIsoBuilder:
 
         for file_type, button in zip(self.file_types, self.file_type_buttons):
             button.config(text=current_translations["file_types"][file_type])
-
-        self.title_label.config(text=current_translations["title_label"])
 
         self.menu_bar.delete(0, tk.END)
 
