@@ -27,4 +27,4 @@ Implement .dol replacing process []
 
 Allow to read automatically the game's region through the riiv .xml []
 
-Allow to set Custom code's path via the batch command []
+Allow to set Custom code's path via the batch command [x]

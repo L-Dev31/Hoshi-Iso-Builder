@@ -6,6 +6,7 @@ import subprocess
 import webbrowser
 import json
 import time
+import shutil
 
 class HoshiIsoBuilder:
     def __init__(self):
@@ -20,7 +21,7 @@ class HoshiIsoBuilder:
         self.light_grey = "#7a7aff"
         self.custom_font = ("Helvetica", 12)
 
-        icon_image = Image.open("icon.png")
+        icon_image = Image.open("Elements/icon.png")
         icon_image = icon_image.resize((32, 32), Image.BICUBIC)  
         icon_photo = ImageTk.PhotoImage(icon_image)
         self.root.iconphoto(True, icon_photo)
@@ -260,11 +261,12 @@ class HoshiIsoBuilder:
                 return
 
             # GCT Builder
-            bat_content = f'.\\start.exe "{riivolution_file}" "{custom_code_folder}" E\n'
+            bat_content = f'".\\Elements\\start.exe" "{riivolution_file}" "{custom_code_folder}" E\n'
             # Rom Extraction
             bat_content += f'wit extract "{base_rom_file}" ".\\temp"\n'
             # Game Patching
             bat_content += f'xcopy /E /I "{riivolution_folder}" ".\\temp\\files"\n'
+            # Dol Patching
             # Iso Rebuilding
             bat_content += f'wit copy ".\\temp" "{destination_path}"\n'
 
@@ -274,11 +276,16 @@ class HoshiIsoBuilder:
                 bat_file.write(bat_content)
 
             os.system(bat_file_path)
+            os.remove('codelist.txt')
+            shutil.rmtree('temp')
             time.sleep(3)
             messagebox.showinfo("Success", "ROM successfully patched!")
+
             self.start_button.config(text="Start Building !")
         except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+            error_message = f"An error occurred: {str(e)}"
+            messagebox.showerror("Error", error_message)
+            print(error_message)
             self.start_button.config(text="Start Building !")
 
     def open_file(self, file_type):
