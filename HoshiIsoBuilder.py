@@ -79,7 +79,7 @@ class HoshiIsoBuilder:
                 "menu_labels": {
                     "file": "📁 Fichier",
                     "theme": "🎨 Thème",
-                    "language": "🌎 Langue",
+                    "language": "🌍 Langue",
                     "credits": "⭐ Crédits",
                 },
                 "save_menu": {
@@ -108,7 +108,7 @@ class HoshiIsoBuilder:
                 "menu_labels": {
                     "file": "📁 Datei",
                     "theme": "🎨 Design",
-                    "language": "🌎 Sprache",
+                    "language": "🌍 Sprache",
                     "credits": "⭐ Credits",
                 },
                 "save_menu": {
@@ -137,7 +137,7 @@ class HoshiIsoBuilder:
                 "menu_labels": {
                     "file": "📁 ファイル",
                     "theme": "🎨 テーマ",
-                    "language": "🌎 言語",
+                    "language": "🌏 言語",
                     "credits": "⭐ クレジット",
                 },
                 "save_menu": {
@@ -166,7 +166,7 @@ class HoshiIsoBuilder:
                 "menu_labels": {
                     "file": "📁 Файл",
                     "theme": "🎨 Тема",
-                    "language": "🌎 Язык",
+                    "language": "🌏 Язык",
                     "credits": "⭐ Заслуги",
                 },
                 "save_menu": {
