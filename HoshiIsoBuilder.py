@@ -65,6 +65,7 @@ class HoshiIsoBuilder:
                     "gui_by": "GUI by L-DEV (Léo TOSKU)",
                     "system_programming_by": "System programming by Humming Owl",
                     "wit_by": "Wit by Wimm",
+                    "gkl_by": "Gecko Loader by JoshuaMKW",
                 },
             },
             "Français": {
@@ -94,6 +95,7 @@ class HoshiIsoBuilder:
                     "gui_by": "Interface graphique par L-DEV (Léo TOSKU)",
                     "system_programming_by": "Système par Humming Owl",
                     "wit_by": "Wit par Wiimm",
+                    "gkl_by": "Gecko Loader par JoshuaMKW",
                 },
             },
             "Deutsch": {
@@ -123,6 +125,7 @@ class HoshiIsoBuilder:
                     "gui_by": "GUI von L-DEV (Léo TOSKU)",
                     "system_programming_by": "Systemprogrammierung von Humming Owl",
                     "wit_by": "Wit von Wiimm",
+                    "gkl_by": "Gecko Loader von JoshuaMKW",
                 },
             },
             "日本語": {
@@ -151,7 +154,8 @@ class HoshiIsoBuilder:
                 "credits_menu": {
                     "gui_by": "L-DEVによるグラフィカルインターフェース",
                     "system_programming_by": "システムプログラミング by Humming Owl",
-                    "wit_by": "Wiimmの「Wit」",
+                    "wit_by": "Wiimmの Wit",
+                    "gkl_by": "Gecko Loaderの JoshuaMKW",
                 },
             },
             "Русский": {
@@ -181,6 +185,7 @@ class HoshiIsoBuilder:
                     "gui_by": "Интерфейс от L-DEV (Léo TOSKU)",
                     "system_programming_by": "Системное программирование от Humming Owl",
                     "wit_by": "Wit от Wiimm",
+                    "gkl_by": "Gecko Loader от JoshuaMKW",
                 },
             },
         }
@@ -222,6 +227,7 @@ class HoshiIsoBuilder:
 
     def start_building(self):
         is_wit_installed()
+        messagebox.showinfo("Warning", "During the process, ensure not to touch any files, turn off your computer, load your ISO on an emulator (e.g., Dolphin Emulator), uninstall Python or any other component, or modify any system files.          The ISO patching process may take some time depending on your computer, so please be patient :)")
         self.start_button.config(text="Processing...")
         self.root.update()
         self.root.after(100, self.continue_building)
@@ -260,11 +266,15 @@ class HoshiIsoBuilder:
 
             # Rom Extraction
             subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], shell=True)
+            print("Base Rom extracted successfully")
 
-            # Destination directory
-            destination_folder = ".\\temp\\files"
+            # Patching Dol
+            subprocess.run(["python", "Elements/GLDolpatcher/GLDolpatcher.py", "temp/sys/main.dol", "codelist.txt"])
+            shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
+            print("The main.dol file was successfully patched")
 
             # Patching Rom
+            destination_folder = ".\\temp\\files"
             for root, dirs, files in os.walk(riivolution_folder):
                 for file in files:
                     src_path = os.path.join(root, file)
@@ -279,11 +289,12 @@ class HoshiIsoBuilder:
             if os.path.exists(destination_path):
                 os.remove(destination_path)
             subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
+            print("The Iso was successfully created")
             
             # Cleaning Files
             os.remove('codelist.txt')
-            os.remove('Elements/start.bat')
             shutil.rmtree('temp')
+            shutil.rmtree('geckoloader-build')
             time.sleep(3)
             messagebox.showinfo("Success", "ROM successfully patched!")
 
@@ -388,6 +399,7 @@ class HoshiIsoBuilder:
         about_menu.add_command(label=current_translations["credits_menu"]["gui_by"], command=lambda: self.open_github_io("https://github.com/L-Dev31"))
         about_menu.add_command(label=current_translations["credits_menu"]["system_programming_by"], command=lambda: self.open_github_io("https://github.com/Humming-Owl/"))
         about_menu.add_command(label=current_translations["credits_menu"]["wit_by"], command=lambda: self.open_github_io("https://github.com/Wiimm"))
+        about_menu.add_command(label=current_translations["credits_menu"]["gkl_by"], command=lambda: self.open_github_io("https://github.com/JoshuaMKW"))
         self.menu_bar.add_cascade(label=current_translations["menu_labels"]["credits"], menu=about_menu)
 
     def run(self):
