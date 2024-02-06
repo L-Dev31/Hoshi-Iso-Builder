@@ -227,7 +227,7 @@ class HoshiIsoBuilder:
 
     def start_building(self):
         is_wit_installed()
-        messagebox.showinfo("Warning", "During the process, ensure not to touch any files, turn off your computer, load your ISO on an emulator (e.g., Dolphin Emulator), uninstall Python or any other component, or modify any system files.          The ISO patching process may take some time depending on your computer, so please be patient :)")
+        messagebox.showinfo("Warning", "During the process, ensure not to touch any files, turn off your computer, load your ISO on an emulator (e.g., Dolphin Emulator), uninstall Python or any other component, or modify any system files. The ISO patching process may take some time depending on your computer, so please be patient.")
         self.start_button.config(text="Processing...")
         self.root.update()
         self.root.after(100, self.continue_building)
