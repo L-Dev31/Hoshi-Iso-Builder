@@ -40,6 +40,6 @@ French translations (by L-DEV)
 
 German translations (by Bavario)
 
-Japanese translations (by )
+Japanese translations (by ぺんぐいん)
 
-Russian translations (by )
+Russian translations (by ChatGPT)
