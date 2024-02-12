@@ -42,4 +42,3 @@ German translations (by Bavario)
 
 Japanese translations (by ぺんぐいん)
 
-Russian translations (by ChatGPT)
