@@ -99,11 +99,11 @@ class HoshiIsoBuilder:
                 },
             },
             "Deutsch": {
-                "start_button": "Start !",
+                "start_button": "Start!",
                 "file_types": {
                     "Riivolution file (.xml)": "Riivolution-Datei (.xml)",
                     "Riivolution patch folder": "Riivolution Patch-Ordner",
-                    "Custom code folder": "Custom Code Ordner",
+                    "Custom code folder": "Custom Code-Ordner",
                     "Base Rom (.iso .wbfs)": "Originale ROM (.iso .wbfs)",
                     "Destination Rom (.iso .wbfs)": "Neue ROM (.iso .wbfs)",
                 },
@@ -129,22 +129,22 @@ class HoshiIsoBuilder:
                 },
             },
             "日本語": {
-                "start_button": "ビルドを開始する！",
+                "start_button": "始める!",
                 "file_types": {
-                    "Riivolution file (.xml)": "Riivolution XML ファイル",
-                    "Riivolution patch folder": "Riivolution パッチフォルダー",
-                    "Custom code folder": "カスタムコードフォルダー",
-                    "Base Rom (.iso .wbfs)": "ベース ROM ファイル",
-                    "Destination Rom (.iso .wbfs)": "目的の ROM ファイル",
+                    "Riivolution file (.xml)" : "Riivolution ファイルを指定 (.xml)",
+                    "Riivolution patch folder" : "Riivolution パッチフォルダーを指定",
+                    "Custom code folder" : "カスタムコードフォルダーを指定",
+                    "Base Rom (.iso .wbfs)" : "ベースRomを指定 (.iso .wbfs)",
+                    "Destination Rom (.iso .wbfs)" : "カスタムRomの保存先 (.iso .wbfs)",
                 },
                 "menu_labels": {
-                    "file": "📁 ファイル",
-                    "theme": "🎨 テーマ",
-                    "language": "🌏 言語",
-                    "credits": "⭐ クレジット",
+                    "file": " ファイル",
+                    "theme": " テーマ",
+                    "language": " 言語",
+                    "credits": " クレジット",
                 },
                 "save_menu": {
-                    "save_as": "名前を付けて保存..",
+                    "save_as": "上書き保存..",
                     "import": "インポート",
                 },
                 "theme_menu": {
@@ -152,40 +152,10 @@ class HoshiIsoBuilder:
                     "light": "ライト",
                 },
                 "credits_menu": {
-                    "gui_by": "L-DEVによるグラフィカルインターフェース",
-                    "system_programming_by": "システムプログラミング by Humming Owl",
-                    "wit_by": "Wiimmの Wit",
-                    "gkl_by": "Gecko Loaderの JoshuaMKW",
-                },
-            },
-            "Русский": {
-                "start_button": "Начать строительство !",
-                "file_types": {
-                    "Riivolution file (.xml)": "Файл Riivolution XML",
-                    "Riivolution patch folder": "Папка патча Riivolution",
-                    "Custom code folder": "Папка пользовательского кода",
-                    "Base Rom (.iso .wbfs)": "Файл базовой ROM",
-                    "Destination Rom (.iso .wbfs)": "Файл целевой ROM",
-                },
-                "menu_labels": {
-                    "file": "📁 Файл",
-                    "theme": "🎨 Тема",
-                    "language": "🌏 Язык",
-                    "credits": "⭐ Заслуги",
-                },
-                "save_menu": {
-                    "save_as": "Сохранить как..",
-                    "import": "Импорт",
-                },
-                "theme_menu": {
-                    "dark": "Тёмная тема",
-                    "light": "Светлая тема",
-                },
-                "credits_menu": {
-                    "gui_by": "Интерфейс от L-DEV (Léo TOSKU)",
-                    "system_programming_by": "Системное программирование от Humming Owl",
-                    "wit_by": "Wit от Wiimm",
-                    "gkl_by": "Gecko Loader от JoshuaMKW",
+                    "gui_by": "GUI設計,デザイン L-DEV (Léo TOSKU)",
+                    "system_programming_by": "システムプログラミング Humming Owl",
+                    "wit_by": "Wit by Wimm",
+                    "gkl_by": "Gecko Loader by JoshuaMKW",
                 },
             },
         }
@@ -391,7 +361,7 @@ class HoshiIsoBuilder:
         self.menu_bar.add_cascade(label=current_translations["menu_labels"]["theme"], menu=theme_menu)
 
         language_menu = tk.Menu(self.menu_bar, tearoff=0)
-        for lang in ["English", "Français", "Deutsch", "日本語", "Русский"]:
+        for lang in ["English", "Français", "Deutsch", "日本語"]:
             language_menu.add_command(label=lang, command=lambda lang=lang: self.set_language(lang))
         self.menu_bar.add_cascade(label=current_translations["menu_labels"]["language"], menu=language_menu)
 
