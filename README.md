@@ -1,6 +1,4 @@
-Unfinished/canceled :/
-
-"okay we had a lot of issues with the system of our tool and we're just confused about why it doesn't work so if anyone wants to take it and finish it or use it for your own creations here it is (please give credits to everyone involved if you do)"
+Unfinished
 
 ![banner](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/cd43906a-ec52-4b6c-9076-2db51b6eaf57)
 
@@ -40,6 +38,5 @@ French translations (by L-DEV)
 
 German translations (by Bavario)
 
-Japanese translations (by )
+Japanese translations (by ぺんぐいん)
 
-Russian translations (by )
