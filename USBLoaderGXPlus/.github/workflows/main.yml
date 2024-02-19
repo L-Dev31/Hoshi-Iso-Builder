@@ -1,0 +1,108 @@
+name: Build binaries
+
+on:
+  push:
+    branches:
+      - "**"
+    paths-ignore:
+      - '**.md'
+      - '.devcontainer/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/FUNDING.yml'
+      - '.github/**/*.md'
+      - '.vscode/**'
+      - 'HBC/**'
+      - 'Languages/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.devcontainer/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/FUNDING.yml'
+      - '.github/**/*.md'
+      - '.vscode/**'
+      - 'HBC/**'
+      - 'Languages/**'
+
+jobs:
+  download-build-tools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Restore cache
+        id: cache-1
+        uses: actions/cache@v3
+        with:
+          path: cache
+          key: ${{ runner.os }}-cache-1
+
+      - name: Download devkitPPC r41, libogc 2.3.1 and required tools
+        if: steps.cache-1.outputs.cache-hit != 'true'
+        # general-tools is needed for bin2s and gamecube-tools is needed for elf2dol & gcdsptool
+        run: | 
+          mkdir cache && cd cache
+          wget "https://wii.leseratte10.de/devkitPro/file.php/devkitPPC-r41-2-linux_x86_64.pkg.tar.xz"
+          wget "https://wii.leseratte10.de/devkitPro/file.php/devkitppc-rules-1.1.1-1-any.pkg.tar.xz"
+          wget "https://wii.leseratte10.de/devkitPro/file.php/libogc-2.3.1-1-any.pkg.tar.xz"
+          wget "https://wii.leseratte10.de/devkitPro/file.php/general-tools-1.2.0-2-linux_x86_64.pkg.tar.xz"
+          wget "https://wii.leseratte10.de/devkitPro/file.php/gamecube-tools-1.0.3-1-linux_x86_64.pkg.tar.xz"
+          cd ..
+
+      - name: Verify checksums
+        run: |
+          sha256sum -c <<EOF
+          f8bdbabd7e30ebc87dc129c092d1fa85e38d726de78befad3dc6714568431076  cache/devkitPPC-r41-2-linux_x86_64.pkg.tar.xz
+          0118f06fff938c3d4913fdc004d5edd2f72e3a16c544fb5699b0e97552529d29  cache/devkitppc-rules-1.1.1-1-any.pkg.tar.xz
+          b10553cced35ab8d3d0c48ee44cdb345f46be5e8f82496dd308f699db4f8d490  cache/libogc-2.3.1-1-any.pkg.tar.xz
+          3348e521e48f27912d0bca05eac73b4365c8c7006b637c95850f4feabe5dd2e9  cache/general-tools-1.2.0-2-linux_x86_64.pkg.tar.xz
+          e7ea6a13ca5a5e9d6a5b8e1616afcc92a81255aa6fee436ed81c812b62e112af  cache/gamecube-tools-1.0.3-1-linux_x86_64.pkg.tar.xz
+          EOF
+  
+  build:
+    runs-on: ubuntu-latest
+    needs: download-build-tools
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore cache
+        id: cache-1
+        uses: actions/cache@v3
+        with:
+          path: cache
+          key: ${{ runner.os }}-cache-1
+
+      - name: Check cache
+        if: steps.cache-1.outputs.cache-hit != 'true'
+        run: exit 1
+
+      - name: Extract downloaded files
+        run: |
+          tar -xf cache/devkitPPC-r41-2-linux_x86_64.pkg.tar.xz --strip-components=1
+          tar -xf cache/devkitppc-rules-1.1.1-1-any.pkg.tar.xz --strip-components=1
+          tar -xf cache/libogc-2.3.1-1-any.pkg.tar.xz --strip-components=1
+          tar -xf cache/general-tools-1.2.0-2-linux_x86_64.pkg.tar.xz --strip-components=1
+          tar -xf cache/gamecube-tools-1.0.3-1-linux_x86_64.pkg.tar.xz --strip-components=1
+
+      - name: Compile USB Loader GX
+        run: |
+          PATH=$(pwd)/devkitpro/devkitPPC/bin:$PATH DEVKITPPC=$(pwd)/devkitpro/devkitPPC DEVKITPRO=$(pwd)/devkitpro make
+
+      - name: Package
+        run: |
+          mkdir -p upload/apps/usbloader_gx
+          cp boot.dol upload/apps/usbloader_gx
+          cp HBC/icon.png upload/apps/usbloader_gx
+          cp HBC/meta.xml upload/apps/usbloader_gx
+          echo "sha=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with: 
+          name: usbloadergx_${{ env.sha }}
+          path: upload
+
+      - name: Upload debug binary
+        uses: actions/upload-artifact@v3
+        with: 
+          name: usbloadergx_${{ env.sha }}_debug
+          path: boot.elf
