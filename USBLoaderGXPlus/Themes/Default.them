@@ -1,22 +1,5 @@
-################################################################################################ 
-#                                                                                              # 
-#   ### # # ### #   # ###  ### ###  ###  ##  ### ### ###                                       # 
-#    #  # # #   ##### #    #   #  # #   #  #  #  # # #  #                                      # 
-#    #  ### ### # # # ###  #   ###  ### ####  #  # # ###                                       # 
-#    #  # # #   #   # #    #   # #  #   #  #  #  # # # #                                       # 
-#    #  # # ### #   # ###  ### #  # ### #  #  #  ### #  #                                      # 
-#                                                                                              # 
-#                                                                                              # 
-# USB Loader GX theme source file.                                                             # 
-#                                                                                              # 
-# File created with ThemeCreator_USBloaderGX (v1.05)                                           # 
-#                                                                                              # 
-# don't delete/change this line (é).                                                           # 
-# ONLY the value before the '-' char needs to be entered in msgstr ""                          # 
-# not the complete text.                                                                       # 
-# It is important that the image folder is defined for the images to load.                     # 
-# The image folder should be in the same folder as the .them file and include the theme images.#
-################################################################################################ 
+USBLoaderGX+ Default Theme
+
 msgid ""
 msgstr ""
 "Project-Id-Version: USB Loader GX\n"
