@@ -1,19 +1,23 @@
-USBLoaderGX+ Default Theme
-
+# USB Loader GX theme source file.
+# don't delete/change this line (é).
+# ONLY the value before the '-' char needs to be entered in msgstr ""
+# not the complete text.
+# It is important that the image folder is defined for the images to load.
+# The image folder should be in the same folder as the .them file and include the theme images.
 msgid ""
 msgstr ""
 "Project-Id-Version: USB Loader GX\n"
-"Report-msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-19 12:24+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-19 12:24+0200\n"
 "PO-Revision-Date: 2009-10-01 01:00+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Theme-Title: ModernUI\n"
-"Image-Folder: .them\n"
-"Last-Themer: Léo Tosku (L-Dev)\n"
-"Theme-Team: \n"
-"Theme-Version: 1\n"
+"Theme-Title: Example\n"
+"Image-Folder: Example\n"
+"Last-Themer: Example\n"
+"Theme-Team: Example\n"
+"Theme-Version: Example\n"
 
 msgid "0 - game bannergrid layout pos x"
 msgstr ""
@@ -22,7 +26,7 @@ msgid "-50 - game bannergrid layout pos y"
 msgstr ""
 
 msgid "r=237 g=237 b=237 a=255 - banner icon frame color"
-msgstr "r=255 g=253 b=253 a=255"
+msgstr ""
 
 msgid "r=52 g=190 b=237 a=255 - banner icon highlite color"
 msgstr ""
@@ -31,7 +35,7 @@ msgid "r=130 g=130 b=130 a=0 - banner icon frame edge tev color 1"
 msgstr ""
 
 msgid "r=180 g=180 b=180 a=255 - banner icon frame edge tev color 2"
-msgstr "r=254 g=255 b=253 a=255"
+msgstr ""
 
 msgid "r=255 g=255 b=255 a=255 - banner icon frame edge tev color 3"
 msgstr ""
@@ -148,64 +152,64 @@ msgid "top - hdd info align ver"
 msgstr ""
 
 msgid "0 - hdd info pos x"
-msgstr "227"
+msgstr ""
 
 msgid "400 - hdd info pos y"
-msgstr "462"
+msgstr ""
 
 msgid "r=55 g=190 b=237 a=255 - game count color"
-msgstr "r=138 g=138 b=138 a=255"
+msgstr ""
 
 msgid "center - game count align hor"
 msgstr ""
 
 msgid "top - game count align ver"
-msgstr "middle"
+msgstr ""
 
 msgid "0 - game count pos x"
-msgstr "3"
+msgstr ""
 
 msgid "420 - game count pos y"
-msgstr "462"
+msgstr ""
 
 msgid "16 - install btn pos x"
-msgstr "93"
+msgstr ""
 
 msgid "355 - install btn pos y"
-msgstr "352"
+msgstr ""
 
 msgid "371 - settings btn pos y"
-msgstr "366"
+msgstr ""
 
 msgid "64 - settings btn pos x"
-msgstr "128"
+msgstr ""
 
 msgid "371 - home menu btn pos y"
-msgstr "366"
+msgstr ""
 
 msgid "489 - home menu btn pos x"
-msgstr "430"
+msgstr ""
 
 msgid "355 - power off btn pos y"
-msgstr "352"
+msgstr ""
 
 msgid "576 - power off btn pos x"
-msgstr "509"
+msgstr ""
 
 msgid "160 - sd card btn pos x"
-msgstr "14"
+msgstr ""
 
 msgid "395 - sd card btn pos y"
-msgstr "386"
+msgstr ""
 
 msgid "405 - HBC btn pos y"
-msgstr "389"
+msgstr ""
 
 msgid "410 - HBC btn pos x"
-msgstr "549"
+msgstr ""
 
 msgid "26 - cover/download btn pos x"
-msgstr "25"
+msgstr ""
 
 msgid "58 - cover/download btn pos y"
 msgstr ""
@@ -229,10 +233,10 @@ msgid "top - clock align ver"
 msgstr ""
 
 msgid "275 - clock pos x"
-msgstr "280"
+msgstr ""
 
 msgid "335 - clock pos y"
-msgstr "401"
+msgstr ""
 
 msgid "168 - list layout favorite btn pos x"
 msgstr ""
@@ -555,10 +559,10 @@ msgstr ""
 msgid "640 - game carousel layout width"
 msgstr ""
 
-msgid "0 - game carousel layout pos x"
+msgid "-20 - game carousel layout pos y"
 msgstr ""
 
-msgid "-20 - game carousel layout pos y"
+msgid "0 - game carousel layout pos x"
 msgstr ""
 
 msgid "100 - bannergrid layout favorite btn pos x"
@@ -661,7 +665,7 @@ msgid "13 - bannergrid layout dvd btn pos y"
 msgstr ""
 
 msgid "1 - show hdd info: 1 for on and 0 for off"
-msgstr "0"
+msgstr ""
 
 msgid "1 - show game count: 1 for on and 0 for off"
 msgstr ""
@@ -672,10 +676,10 @@ msgstr ""
 msgid "middle - category switch prompt align ver"
 msgstr ""
 
-msgid "0 - category switch prompt pos y"
+msgid "0 - category switch prompt pos x"
 msgstr ""
 
-msgid "0 - category switch prompt pos x"
+msgid "0 - category switch prompt pos y"
 msgstr ""
 
 msgid "r=55 g=190 b=237 a=255 - game id text color"
@@ -685,10 +689,10 @@ msgid "r=55 g=190 b=237 a=255 - region info text color"
 msgstr ""
 
 msgid "30 - region info text pos y"
-msgstr "38"
+msgstr ""
 
 msgid "68 - region info text pos x"
-msgstr "59"
+msgstr ""
 
 msgid "r=0 g=0 b=0 a=255 - banner window playcount text color"
 msgstr ""
@@ -935,4 +939,3 @@ msgstr ""
 
 msgid "1 - Enable tooltips: 0 for off and 1 for on"
 msgstr ""
-
