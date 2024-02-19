@@ -1,7 +1,5 @@
 #include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <dirent.h>
 
 #include "GUI/gui.h"
 #include "GUI/gui_optionbrowser.h"
@@ -11,16 +9,12 @@
 #include "FileOperations/fileops.h"
 #include "menu.h"
 #include "sys.h"
-#include "gct.h"
+#include "riivolutionmenu.h"
 
-/****************************************************************************
- * RiivolutionMenu
- ***************************************************************************/
 int RiivolutionMenu(const char *gameID)
 {
     int choice = 0;
     bool exit = false;
-    int ret = 1;
 
     GuiImageData btnOutline(Resources::GetFile("button_dialogue_box.png"), Resources::GetFileSize("button_dialogue_box.png"));
     GuiImageData settingsbg(Resources::GetFile("settings_background.png"), Resources::GetFileSize("settings_background.png"));
@@ -39,43 +33,32 @@ int RiivolutionMenu(const char *gameID)
     backBtn.SetTrigger(&trigB);
 
     char riivolutionFolderPath[120];
-    snprintf(riivolutionFolderPath, sizeof(riivolutionFolderPath), "%s%s/", Settings.Riivolutionpath, gameID);
+    snprintf(riivolutionFolderPath, sizeof(riivolutionFolderPath), "%s%s", Settings.Riivolutionpath, gameID);
 
-    DIR *dir = opendir(riivolutionFolderPath);
-    if (!dir) {
+    if (!CheckFile(riivolutionFolderPath)) {
         choice = WindowPrompt(tr("Error"), tr("Riivolution folder not found. Create it?"), tr("Yes"), tr("Cancel"));
-        if (choice) {
-            CreateSubfolder(riivolutionFolderPath);
-        } else {
+        if (choice == 0) {
             return choice;
-        }
-    } else {
-        closedir(dir);
-
-        struct dirent *entry;
-        dir = opendir(riivolutionFolderPath);
-        bool folderIsEmpty = true;
-
-        while ((entry = readdir(dir)) != NULL) {
-            if (entry->d_type == DT_REG && strstr(entry->d_name, ".xml") != NULL) {
-                folderIsEmpty = false;
-                break;
-            }
-        }
-
-        closedir(dir);
-
-        if (folderIsEmpty) {
-            choice = WindowPrompt(tr("Error"), tr("Riivolution folder is empty. Delete it?"), tr("Yes"), tr("Cancel"));
-            if (choice) {
-                RemoveFolder(riivolutionFolderPath);
-            } else {
-                return choice;
+        } else {
+            if (!CreateSubfolder(riivolutionFolderPath)) {
+                return -1;
             }
         }
     }
 
-    // Riivolution here..
+    u64 directorySize = GetDirectorySize(riivolutionFolderPath);
+    if (directorySize == 0) {
+        choice = WindowPrompt(tr("Error"), tr("Your game's Riivolution folder is empty. Delete it?"), tr("Yes"), tr("Cancel"));
+        if (choice == 0) {
+            return choice;
+        } else {
+            if (!RemoveDirectory(riivolutionFolderPath)) {
+                return -1;
+            }
+        }
+    } else {
+        // Riivolution
+    }
 
     return choice;
 }
