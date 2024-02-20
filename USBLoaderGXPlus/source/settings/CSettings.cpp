@@ -65,7 +65,6 @@ void CSettings::SetDefault()
 	snprintf(GameHeaderCachePath, sizeof(GameHeaderCachePath), "%scache/", ConfigPath);
 	snprintf(homebrewapps_path, sizeof(homebrewapps_path), "%s/apps/", BootDevice);
 	snprintf(Cheatcodespath, sizeof(Cheatcodespath), "%s/codes/", BootDevice);
-	snprintf(Riivolutionpath, sizeof(Riivolutionpath), "%s/riivolution/", BootDevice);
 	snprintf(TxtCheatcodespath, sizeof(TxtCheatcodespath), "%s/txtcodes/", BootDevice);
 	snprintf(BcaCodepath, sizeof(BcaCodepath), "%s/bca/", BootDevice);
 	snprintf(WipCodepath, sizeof(WipCodepath), "%s/wip/", BootDevice);
@@ -372,7 +371,6 @@ bool CSettings::Save()
 	fprintf(file, "homebrewapps_path = %s\n", homebrewapps_path);
 	fprintf(file, "BNRCachePath = %s\n", BNRCachePath);
 	fprintf(file, "GameHeaderCachePath = %s\n", GameHeaderCachePath);
-	fprintf(file, "Riivolutionpath = %s\n", Riivolutionpath);
 	fprintf(file, "Cheatcodespath = %s\n", Cheatcodespath);
 	fprintf(file, "BcaCodepath = %s\n", BcaCodepath);
 	fprintf(file, "WipCodepath = %s\n", WipCodepath);
@@ -1266,11 +1264,6 @@ bool CSettings::SetSetting(char *name, char *value)
 	else if (strcmp(name, "TxtCheatcodespath") == 0)
 	{
 		strlcpy(TxtCheatcodespath, value, sizeof(TxtCheatcodespath));
-		return true;
-	}
-	else if (strcmp(name, "Riivolutionpath") == 0)
-	{
-		strlcpy(Riivolutionpath, value, sizeof(Riivolutionpath));
 		return true;
 	}
 	else if (strcmp(name, "titlestxt_path") == 0)

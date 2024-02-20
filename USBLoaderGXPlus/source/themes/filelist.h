@@ -230,23 +230,26 @@ extern const u32 gameinfo2_png_size;
 extern const u8 gameinfo2a_png[];
 extern const u32 gameinfo2a_png_size;
 
-extern const u8 gc_banner_bg_png[];
-extern const u32 gc_banner_bg_png_size;
-
-extern const u8 gc_icon_bg_png[];
-extern const u32 gc_icon_bg_png_size;
-
 extern const u8 gcncontroller_png[];
 extern const u32 gcncontroller_png_size;
 
 extern const u8 gcncontrollerR_png[];
 extern const u32 gcncontrollerR_png_size;
 
+extern const u8 gc_banner_bg_png[];
+extern const u32 gc_banner_bg_png_size;
+
+extern const u8 gc_icon_bg_png[];
+extern const u32 gc_icon_bg_png_size;
+
 extern const u8 guitar_png[];
 extern const u32 guitar_png_size;
 
 extern const u8 guitarR_png[];
 extern const u32 guitarR_png_size;
+
+extern const u8 gxlogo_png[];
+extern const u32 gxlogo_png_size;
 
 extern const u8 icon_folder_png[];
 extern const u32 icon_folder_png_size;
@@ -566,9 +569,6 @@ extern const u32 zapper_png_size;
 extern const u8 zapperR_png[];
 extern const u32 zapperR_png_size;
 
-extern const u8 gxlogo_png[];
-extern const u32 gxlogo_png_size;
-
 extern const u8 bg_music_ogg[];
 extern const u32 bg_music_ogg_size;
 
@@ -683,12 +683,13 @@ RecourceFile Resources::RecourceFiles[] =
 	{"gameinfo1a.png", gameinfo1a_png, gameinfo1a_png_size, NULL, 0},
 	{"gameinfo2.png", gameinfo2_png, gameinfo2_png_size, NULL, 0},
 	{"gameinfo2a.png", gameinfo2a_png, gameinfo2a_png_size, NULL, 0},
-	{"gc_banner_bg.png", gc_banner_bg_png, gc_banner_bg_png_size, NULL, 0},
-	{"gc_icon_bg.png", gc_icon_bg_png, gc_icon_bg_png_size, NULL, 0},
 	{"gcncontroller.png", gcncontroller_png, gcncontroller_png_size, NULL, 0},
 	{"gcncontrollerR.png", gcncontrollerR_png, gcncontrollerR_png_size, NULL, 0},
+	{"gc_banner_bg.png", gc_banner_bg_png, gc_banner_bg_png_size, NULL, 0},
+	{"gc_icon_bg.png", gc_icon_bg_png, gc_icon_bg_png_size, NULL, 0},
 	{"guitar.png", guitar_png, guitar_png_size, NULL, 0},
 	{"guitarR.png", guitarR_png, guitarR_png_size, NULL, 0},
+	{"gxlogo.png", gxlogo_png, gxlogo_png_size, NULL, 0},
 	{"icon_folder.png", icon_folder_png, icon_folder_png_size, NULL, 0},
 	{"keyboard_backspace_over.png", keyboard_backspace_over_png, keyboard_backspace_over_png_size, NULL, 0},
 	{"keyboard_clear_over.png", keyboard_clear_over_png, keyboard_clear_over_png_size, NULL, 0},
@@ -795,7 +796,6 @@ RecourceFile Resources::RecourceFiles[] =
 	{"wiispeakR.png", wiispeakR_png, wiispeakR_png_size, NULL, 0},
 	{"zapper.png", zapper_png, zapper_png_size, NULL, 0},
 	{"zapperR.png", zapperR_png, zapperR_png_size, NULL, 0},
-	{"gxlogo.png", gxlogo_png, gxlogo_png_size, NULL, 0},
 	{"bg_music.ogg", bg_music_ogg, bg_music_ogg_size, NULL, 0},
 	{"button_click.ogg", button_click_ogg, button_click_ogg_size, NULL, 0},
 	{"button_click2.ogg", button_click2_ogg, button_click2_ogg_size, NULL, 0},
