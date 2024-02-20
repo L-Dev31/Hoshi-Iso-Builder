@@ -32,6 +32,7 @@
 #include "Controls/DeviceHandler.hpp"
 #include "language/gettext.h"
 #include "themes/CTheme.h"
+#include "Riivolution/CRiivolution.h"
 #include "FileOperations/fileops.h"
 #include "utils/encrypt.h"
 #include "svnrev.h"
@@ -71,6 +72,7 @@ void CSettings::SetDefault()
 	snprintf(WDMpath, sizeof(WDMpath), "%s/wdm/", BootDevice);
 	snprintf(WiinnertagPath, sizeof(WiinnertagPath), "%s", ConfigPath);
 	snprintf(theme_path, sizeof(theme_path), "%stheme/", ConfigPath);
+	snprintf(Riivolution_path, sizeof(Riivolution_path), "%sRiivolution/", ConfigPath);
 	snprintf(dolpath, sizeof(dolpath), "%s/", BootDevice);
 	snprintf(NandEmuPath, sizeof(NandEmuPath), "%s/nands/01/", BootDevice);
 	snprintf(DEVOLoaderPath, sizeof(DEVOLoaderPath), "%s/apps/gc_devo/", BootDevice);
@@ -357,6 +359,7 @@ bool CSettings::Save()
 	fprintf(file, "covers2d_path = %s\n", covers2d_path);
 	fprintf(file, "coversFull_path = %s\n", coversFull_path);
 	fprintf(file, "theme_path = %s\n", theme_path);
+	fprintf(file, "Riivolution_path = %s\n", Riivolution_path);
 	fprintf(file, "theme = %s\n", theme);
 	fprintf(file, "disc_path = %s\n", disc_path);
 	fprintf(file, "language_path = %s\n", language_path);
@@ -1239,6 +1242,11 @@ bool CSettings::SetSetting(char *name, char *value)
 	else if (strcmp(name, "theme_path") == 0)
 	{
 		strlcpy(theme_path, value, sizeof(theme_path));
+		return true;
+	}
+	else if (strcmp(name, "Riivolution_path") == 0)
+	{
+		strlcpy(Riivolution_path, value, sizeof(Riivolution_path));
 		return true;
 	}
 	else if (strcmp(name, "theme") == 0)
