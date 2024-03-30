@@ -4,23 +4,25 @@ Spanish translations []
 
 German translations [x]
 
-Japanese Translations []
+Japanese Translations [x]
 
 Russian translations []
 
 
 **.dol Patcher**
 
-Create a gct/txt dol patcher which can get triggered by a batch command []
+Create a gct/txt dol patcher which can get triggered by a batch command [x]
+
+Making it patching successfully []
 
 
 **Hoshi**
 
-Allow the command to not ask for permission to replace []
+Allow the command to not ask for permission to replace [x]
 
-Implement .dol patching process []
+Implement .dol patching process [x]
 
-Implement .dol replacing process []
+Implement .dol replacing process [x]
 
 
 **.gct/.txt builder**
