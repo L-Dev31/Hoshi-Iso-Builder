@@ -12,7 +12,7 @@ class HoshiIsoBuilder:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Hoshi v0.2")
-        self.root.geometry("500x580")
+        self.root.geometry("500x520")
         self.root.resizable(False, False)
 
         self.menu_bar = None
@@ -30,7 +30,7 @@ class HoshiIsoBuilder:
         title_image = title_image.resize((280, 70), Image.BICUBIC)
         self.title_texture = ImageTk.PhotoImage(title_image)
 
-        self.file_types = ["Riivolution file (.xml)", "Riivolution patch folder", "Custom code folder", "Base Rom (.iso .wbfs)", "Destination Rom (.iso .wbfs)"]
+        self.file_types = ["Riivolution file (.xml)", "Riivolution patch folder", "Base Rom (.iso .wbfs)", "Destination Rom (.iso .wbfs)"]
         self.file_paths = {}
         self.file_type_buttons = []
         self.start_button = None
@@ -43,7 +43,6 @@ class HoshiIsoBuilder:
                 "file_types": {
                     "Riivolution file (.xml)": "Riivolution file (.xml)",
                     "Riivolution patch folder": "Riivolution patch folder",
-                    "Custom code folder": "Custom code folder",
                     "Base Rom (.iso .wbfs)": "Base Rom (.iso .wbfs)",
                     "Destination Rom (.iso .wbfs)": "Destination Rom (.iso .wbfs)",
                 },
@@ -73,7 +72,6 @@ class HoshiIsoBuilder:
                 "file_types": {
                     "Riivolution file (.xml)": "Fichier Riivolution (.xml))",
                     "Riivolution patch folder": "Dossier du patch Riivolution",
-                    "Custom code folder": "Dossier Custom Code",
                     "Base Rom (.iso .wbfs)": "Fichier ROM de base (.iso .wbfs)",
                     "Destination Rom (.iso .wbfs)": "Fichier ROM de destination (.iso .wbfs)",
                 },
@@ -103,7 +101,6 @@ class HoshiIsoBuilder:
                 "file_types": {
                     "Riivolution file (.xml)": "Riivolution-Datei (.xml)",
                     "Riivolution patch folder": "Riivolution Patch-Ordner",
-                    "Custom code folder": "Custom Code-Ordner",
                     "Base Rom (.iso .wbfs)": "Originale ROM (.iso .wbfs)",
                     "Destination Rom (.iso .wbfs)": "Neue ROM (.iso .wbfs)",
                 },
@@ -133,7 +130,6 @@ class HoshiIsoBuilder:
                 "file_types": {
                     "Riivolution file (.xml)" : "Riivolution ファイルを指定 (.xml)",
                     "Riivolution patch folder" : "Riivolution パッチフォルダーを指定",
-                    "Custom code folder" : "カスタムコードフォルダーを指定",
                     "Base Rom (.iso .wbfs)" : "ベースRomを指定 (.iso .wbfs)",
                     "Destination Rom (.iso .wbfs)" : "カスタムRomの保存先 (.iso .wbfs)",
                 },
@@ -210,36 +206,38 @@ class HoshiIsoBuilder:
                 return
 
             destination_path = self.file_paths["Destination Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
-            if not destination_path:
-                messagebox.showerror("Error", "Please fill in all cells")
-                self.start_button.config(text="Start Building !")
-                return
-
             riivolution_file = self.file_paths["Riivolution file (.xml)"].get("1.0", tk.END).strip()
             riivolution_folder = self.file_paths["Riivolution patch folder"].get("1.0", tk.END).strip()
-            custom_code_folder = self.file_paths["Custom code folder"].get("1.0", tk.END).strip()
+            base_rom_file = self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
 
-            if not riivolution_file or not custom_code_folder:
+            # Check if any required file paths are empty
+            if not destination_path or not riivolution_file or not base_rom_file:
+                messagebox.showerror("Error", "Please fill in all required fields.")
+                self.start_button.config(text="Start Building !")
                 return
 
             elements_directory = "Elements"
             if not os.path.exists(elements_directory):
                 os.makedirs(elements_directory)
 
-            base_rom_file = self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
-
-            if not base_rom_file:
-                return
+            # Region checker
+            regionCheck = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            if regionCheck.returncode == 0:
+                region_id = regionCheck.stdout.strip()[3] if regionCheck.stdout else ""
+                print("Region ID:", region_id)
+            else:
+                print("Error executing command:", regionCheck.stderr)
 
             # GCT Builder
-            subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, "E"], shell=True)
+            custom_code_folder =  riivolution_folder + "/CustomCode"
+            subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, region_id], shell=True)
 
             # Rom Extraction
             subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], shell=True)
             print("Base Rom extracted successfully")
 
             # Patching Dol
-            subprocess.run(["python", "Elements/GLDolpatcher/GLDolpatcher.py", "temp/sys/main.dol", "codelist.txt"])
+            subprocess.run(["Elements/GeckoLoader.exe", "-tc", "ALL", "temp/sys/main.dol", "codelist.txt"])
             shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
             print("The main.dol file was successfully patched")
 
@@ -278,8 +276,6 @@ class HoshiIsoBuilder:
     def open_file(self, file_type):
         if file_type == "Riivolution file (.xml)":
             file_path = filedialog.askopenfilename(filetypes=[("Riivolution XML files", "*.xml")])
-        elif file_type == "Custom code folder":
-            file_path = filedialog.askdirectory()
         elif file_type == "Riivolution patch folder":
             file_path = filedialog.askdirectory()
         elif file_type == "Base Rom (.iso .wbfs)":
