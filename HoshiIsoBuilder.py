@@ -230,16 +230,22 @@ class HoshiIsoBuilder:
 
             # GCT Builder
             custom_code_folder =  riivolution_folder + "/CustomCode"
-            subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, region_id], shell=True)
+            if os.path.exists(custom_code_folder):
+                subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, region_id], shell=True)
+            else:
+                print("This mod doesn't use custom code - GCT creation Skipped")
 
             # Rom Extraction
             subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], shell=True)
             print("Base Rom extracted successfully")
 
             # Patching Dol
-            subprocess.run(["Elements/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
-            shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
-            print("The main.dol file was successfully patched")
+            if os.path.exists(custom_code_folder):
+                subprocess.run(["Elements/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
+                shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
+                print("The main.dol file was successfully patched")
+            else:
+                print("This mod doesn't use custom code - Dol Patching Skipped")
 
             # Patching Rom
             destination_folder = ".\\temp\\files"
