@@ -190,7 +190,6 @@ class HoshiIsoBuilder:
 
         self.update_ui_language()
 
-
     def start_building(self):
         is_wit_installed()
         messagebox.showinfo("Warning", "During the process, ensure not to touch any files, turn off your computer, load your ISO on an emulator (e.g., Dolphin Emulator), uninstall Python or any other component, or modify any system files. The ISO patching process may take some time depending on your computer, so please be patient.")
@@ -238,30 +237,47 @@ class HoshiIsoBuilder:
                     region_name = "Unknown"
                 
                 print("Detected Region:", region_name)
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
             else:
                 print("Error executing command:", regionCheck.stderr)
-                subprocess.run([clear])
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
 
             # GCT Builder
             custom_code_folder =  riivolution_folder + "/CustomCode"
             if os.path.exists(custom_code_folder):
+                print("Building GCT Patch :")
                 subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, region_id], shell=True)
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
             else:
                 print("This mod doesn't use custom code - GCT creation Skipped")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
 
             # Rom Extraction
+            print("Extracting ROM:")
             subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], shell=True)
             print("Base Rom extracted successfully")
+            time.sleep(3)
+            subprocess.run(["cls"], shell=True)
 
             # Patching Dol
+            print("Patching DOL:")
             if os.path.exists(custom_code_folder):
                 subprocess.run(["Elements/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
                 shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
                 print("The main.dol file was successfully patched")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
             else:
                 print("This mod doesn't use custom code - Dol Patching Skipped")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
 
             # Patching Rom
+            print("Patching ROM:")
             destination_folder = ".\\temp\\files"
             for root, dirs, files in os.walk(riivolution_folder):
                 for file in files:
@@ -272,14 +288,20 @@ class HoshiIsoBuilder:
                     print(f"Copying and replacing: {relative_path}")
                     shutil.copy2(src_path, dest_path)
             print("All files copied and replaced.")
+            time.sleep(3)
+            subprocess.run(["cls"], shell=True)
 
             # Iso Rebuilding
+            print("Mod's ISO building:")
             if os.path.exists(destination_path):
                 os.remove(destination_path)
             subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
             print("The Iso was successfully created")
+            time.sleep(3)
+            subprocess.run(["cls"], shell=True)
             
             # Cleaning Files
+            print("Cleaning Temp files:")
             if os.path.exists(custom_code_folder):
                 shutil.rmtree('geckoloader-build')
                 os.remove('codelist.txt')
