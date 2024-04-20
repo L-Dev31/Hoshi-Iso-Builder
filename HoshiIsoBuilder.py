@@ -266,9 +266,10 @@ class HoshiIsoBuilder:
             print("The Iso was successfully created")
             
             # Cleaning Files
-            os.remove('codelist.txt')
+            if os.path.exists(custom_code_folder):
+                shutil.rmtree('geckoloader-build')
+                os.remove('codelist.txt')
             shutil.rmtree('temp')
-            shutil.rmtree('geckoloader-build')
             time.sleep(3)
             messagebox.showinfo("Success", "ROM successfully patched!")
 
