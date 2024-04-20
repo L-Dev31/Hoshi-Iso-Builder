@@ -237,7 +237,7 @@ class HoshiIsoBuilder:
             print("Base Rom extracted successfully")
 
             # Patching Dol
-            subprocess.run(["Elements/GeckoLoader.exe", "-tc", "ALL", "temp/sys/main.dol", "codelist.txt"])
+            subprocess.run(["Elements/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
             shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
             print("The main.dol file was successfully patched")
 
