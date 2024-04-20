@@ -224,18 +224,23 @@ class HoshiIsoBuilder:
             regionCheck = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if regionCheck.returncode == 0:
                 region_id = regionCheck.stdout.strip()[3] if regionCheck.stdout else ""
+                region_name = ""
+
                 if region_id == "E":
-                    print("Detected Region: USA")
+                    region_name = "North America"
                 elif region_id == "P":
-                    print("Detected Region: Europe")
+                    region_name = "Europe"
                 elif region_id == "K":
-                    print("Detected Region: South Korea")
+                    region_name = "South Korea"
                 elif region_id == "J":
-                    print("Detected Region: Japan")
+                    region_name = "Japan"
                 else:
-                    print("Detected Region: Unknown Region (",region_id,")")
+                    region_name = "Unknown"
+                
+                print("Detected Region:", region_name)
             else:
                 print("Error executing command:", regionCheck.stderr)
+                subprocess.run([clear])
 
             # GCT Builder
             custom_code_folder =  riivolution_folder + "/CustomCode"
