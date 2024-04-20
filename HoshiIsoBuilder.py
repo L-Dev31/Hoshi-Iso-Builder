@@ -224,7 +224,16 @@ class HoshiIsoBuilder:
             regionCheck = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if regionCheck.returncode == 0:
                 region_id = regionCheck.stdout.strip()[3] if regionCheck.stdout else ""
-                print("Region ID:", region_id)
+                if region_id == "E":
+                    print("Detected Region: USA")
+                elif region_id == "P":
+                    print("Detected Region: Europe")
+                elif region_id == "K":
+                    print("Detected Region: South Korea")
+                elif region_id == "J":
+                    print("Detected Region: Japan")
+                else:
+                    print("Detected Region: Unknown Region (",region_id,")")
             else:
                 print("Error executing command:", regionCheck.stderr)
 
