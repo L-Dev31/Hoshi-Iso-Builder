@@ -197,6 +197,68 @@ class HoshiIsoBuilder:
         self.root.update()
         self.root.after(100, self.continue_building)
 
+    def prompt_id_name_change(self):
+        idCheck = subprocess.run(["wit", "ID6", self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if idCheck.returncode == 0:
+            original_id = idCheck.stdout.strip() if idCheck.stdout else ""
+        
+        original_name_id = original_id[:3]
+        if original_name_id.startswith("RMG"):
+            original_name = "SUPER MARIO GALAXY"
+        elif original_name_id == "SB4":
+            original_name = "SUPER MARIO GALAXY MORE"
+        else:
+            original_name = "Unknown or not SMG/SMG2"
+
+        mod_id = ""
+        mod_name = ""
+        
+        # Create dialog for user input
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Modify ID and Name")
+        dialog.configure(bg=self.dark_theme["bg"])
+
+        # Original ID and Name (display only)
+        tk.Label(dialog, text="Original", font=self.custom_font, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=0, column=0, columnspan=2, sticky="w")
+        tk.Label(dialog, text="ID :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=1, column=0, sticky="w")
+        tk.Label(dialog, text="Name :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=2, column=0, sticky="w")
+        original_id_text = tk.Label(dialog, text=original_id, bg=self.dark_theme["bg"], fg=self.light_grey, font=self.custom_font)
+        original_id_text.grid(row=1, column=1, sticky="w")
+        original_name_text = tk.Label(dialog, text=original_name, bg=self.dark_theme["bg"], fg=self.light_grey, font=self.custom_font)
+        original_name_text.grid(row=2, column=1, sticky="w")
+
+        # New ID and Name
+        tk.Label(dialog, text="New", font=self.custom_font, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=0, column=2, columnspan=2)
+        tk.Label(dialog, text="ID :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=1, column=2)
+        tk.Label(dialog, text="Name :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=2, column=2)
+        new_id_text = tk.Text(dialog, height=1, width=20, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"], font=self.custom_font)
+        new_id_text.grid(row=1, column=3)
+        new_name_text = tk.Text(dialog, height=1, width=20, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"], font=self.custom_font)
+        new_name_text.grid(row=2, column=3)
+
+        # OK and Cancel buttons
+        ok_button = tk.Button(dialog, text="OK", command=dialog.destroy, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
+        ok_button.grid(row=3, column=1, pady=10)
+        cancel_button = tk.Button(dialog, text="Cancel", command=lambda: self.cancel_modification(dialog), bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
+        cancel_button.grid(row=3, column=3, pady=10)
+
+        # Wait for dialog to close
+        dialog.wait_window(dialog)
+
+        # Retrieve user input
+        new_id = new_id_text.get("1.0", tk.END).strip()
+        new_name = new_name_text.get("1.0", tk.END).strip()
+
+        # Update the UI accordingly
+        new_id_text.insert(tk.END, new_id)
+        new_name_text.insert(tk.END, new_name)
+
+        return new_id, new_name
+
+    def cancel_modification(self, dialog):
+        dialog.destroy()
+        self.start_button.config(text="Start Building !")
+
     def continue_building(self):
         try:
             if not is_wit_installed():
@@ -246,15 +308,10 @@ class HoshiIsoBuilder:
 
             # GCT Builder
             custom_code_folder =  riivolution_folder + "/CustomCode"
-            if os.path.exists(custom_code_folder):
-                print("Building GCT Patch :")
-                subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, region_id], shell=True)
-                time.sleep(3)
-                subprocess.run(["cls"], shell=True)
-            else:
-                print("This mod doesn't use custom code - GCT creation Skipped")
-                time.sleep(3)
-                subprocess.run(["cls"], shell=True)
+            print("Building GCT Patch :")
+            subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, region_id], shell=True)
+            time.sleep(3)
+            subprocess.run(["cls"], shell=True)
 
             # Rom Extraction
             print("Extracting ROM:")
@@ -265,16 +322,11 @@ class HoshiIsoBuilder:
 
             # Patching Dol
             print("Patching DOL:")
-            if os.path.exists(custom_code_folder):
-                subprocess.run(["Elements/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
-                shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
-                print("The main.dol file was successfully patched")
-                time.sleep(3)
-                subprocess.run(["cls"], shell=True)
-            else:
-                print("This mod doesn't use custom code - Dol Patching Skipped")
-                time.sleep(3)
-                subprocess.run(["cls"], shell=True)
+            subprocess.run(["Elements/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
+            shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
+            print("The main.dol file was successfully patched")
+            time.sleep(3)
+            subprocess.run(["cls"], shell=True)
 
             # Patching Rom
             print("Patching ROM:")
@@ -291,8 +343,11 @@ class HoshiIsoBuilder:
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
 
+            # Prompt for ID and Name change
+            new_id, new_name = self.prompt_id_name_change()
+
             # Iso Rebuilding
-            print("Mod's ISO building:")
+            print("Rom building:")
             if os.path.exists(destination_path):
                 os.remove(destination_path)
             subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
@@ -302,11 +357,15 @@ class HoshiIsoBuilder:
             
             # Cleaning Files
             print("Cleaning Temp files:")
-            if os.path.exists(custom_code_folder):
-                shutil.rmtree('geckoloader-build')
-                os.remove('codelist.txt')
+            shutil.rmtree('geckoloader-build')
+            os.remove('codelist.txt')
+            print("Custom Code patch files removed")
             shutil.rmtree('temp')
+            print("Temporary Game files removed")
             time.sleep(3)
+            subprocess.run(["cls"], shell=True)
+
+            #Success
             messagebox.showinfo("Success", "ROM successfully patched!")
 
             self.start_button.config(text="Start Building !")
@@ -315,7 +374,7 @@ class HoshiIsoBuilder:
             messagebox.showerror("Error", error_message)
             print(error_message)
             self.start_button.config(text="Start Building !")
-
+        
     def open_file(self, file_type):
         if file_type == "Riivolution file (.xml)":
             file_path = filedialog.askopenfilename(filetypes=[("Riivolution XML files", "*.xml")])

@@ -18,11 +18,9 @@ Making it patching successfully []
 
 **Hoshi**
 
-Allow the command to not ask for permission to replace [x]
+Make temp files deleted auto if error []
 
-Implement .dol patching process [x]
-
-Implement .dol replacing process [x]
+finish custom id and name window
 
 
 **.gct/.txt builder**
