@@ -1,3 +1,5 @@
+# Hoshi - Universal Wii Iso Builder - L-DEV31 
+
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
@@ -7,6 +9,7 @@ import webbrowser
 import json
 import time
 import shutil
+import re
 
 class HoshiIsoBuilder:
     def __init__(self):
@@ -188,8 +191,6 @@ class HoshiIsoBuilder:
         self.start_button.pack(pady=20, fill=tk.X)
         self.update_ui_language()
 
-        self.update_ui_language()
-
     def start_building(self):
         is_wit_installed()
         messagebox.showinfo("Warning", "During the process, ensure not to touch any files, turn off your computer, load your ISO on an emulator (e.g., Dolphin Emulator), uninstall Python or any other component, or modify any system files. The ISO patching process may take some time depending on your computer, so please be patient.")
@@ -201,24 +202,23 @@ class HoshiIsoBuilder:
         idCheck = subprocess.run(["wit", "ID6", self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if idCheck.returncode == 0:
             original_id = idCheck.stdout.strip() if idCheck.stdout else ""
-        
-        original_name_id = original_id[:3]
-        if original_name_id.startswith("RMG"):
-            original_name = "SUPER MARIO GALAXY"
-        elif original_name_id == "SB4":
-            original_name = "SUPER MARIO GALAXY MORE"
+
+        nameCheck = subprocess.run(["wit", "ANAID", original_id], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        if nameCheck.returncode == 0:
+            match = re.search(r'Game Title\s+-+\s+(.*)', nameCheck.stdout)
+            original_name = match.group(1)[16:].strip() if match else ""
         else:
-            original_name = "Unknown or not SMG/SMG2"
+            original_name = "Unknown Game"
 
         mod_id = ""
         mod_name = ""
-        
-        # Create dialog for user input
+
         dialog = tk.Toplevel(self.root)
         dialog.title("Modify ID and Name")
         dialog.configure(bg=self.dark_theme["bg"])
+        dialog.resizable(False, False)
 
-        # Original ID and Name (display only)
         tk.Label(dialog, text="Original", font=self.custom_font, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=0, column=0, columnspan=2, sticky="w")
         tk.Label(dialog, text="ID :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=1, column=0, sticky="w")
         tk.Label(dialog, text="Name :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=2, column=0, sticky="w")
@@ -227,37 +227,36 @@ class HoshiIsoBuilder:
         original_name_text = tk.Label(dialog, text=original_name, bg=self.dark_theme["bg"], fg=self.light_grey, font=self.custom_font)
         original_name_text.grid(row=2, column=1, sticky="w")
 
-        # New ID and Name
         tk.Label(dialog, text="New", font=self.custom_font, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=0, column=2, columnspan=2)
-        tk.Label(dialog, text="ID :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=1, column=2)
-        tk.Label(dialog, text="Name :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=2, column=2)
-        new_id_text = tk.Text(dialog, height=1, width=20, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"], font=self.custom_font)
-        new_id_text.grid(row=1, column=3)
-        new_name_text = tk.Text(dialog, height=1, width=20, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"], font=self.custom_font)
-        new_name_text.grid(row=2, column=3)
+        tk.Label(dialog, text="ID (6 characters):", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=1, column=2)
+        tk.Label(dialog, text="Name (Max 32 characters):", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=2, column=2)
+        mod_id_text = tk.Entry(dialog, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"], font=self.custom_font)
+        mod_id_text.grid(row=1, column=3)
+        mod_name_text = tk.Entry(dialog, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"], font=self.custom_font)
+        mod_name_text.grid(row=2, column=3)
 
-        # OK and Cancel buttons
-        ok_button = tk.Button(dialog, text="OK", command=dialog.destroy, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
-        ok_button.grid(row=3, column=1, pady=10)
-        cancel_button = tk.Button(dialog, text="Cancel", command=lambda: self.cancel_modification(dialog), bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
-        cancel_button.grid(row=3, column=3, pady=10)
+        def on_okay():
+            nonlocal mod_id, mod_name
+            mod_id = mod_id_text.get().upper()
+            mod_name = mod_name_text.get().strip()
+            if len(mod_id) < 6 or len(mod_name) == 0 or len(mod_name) > 32:
+                messagebox.showerror("Error", "Mod ID must be at least 6 characters long, Mod Name cannot be empty, and must be at most 32 characters long.")
+                return
+            dialog.destroy()
 
-        # Wait for dialog to close
+        def on_cancel():
+            nonlocal mod_id, mod_name
+            mod_id = ""
+            mod_name = ""
+            dialog.destroy()
+
+        cancel_button = tk.Button(dialog, text="Cancel", command=on_cancel, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
+        cancel_button.grid(row=3, column=1, pady=10)        
+        ok_button = tk.Button(dialog, text="OK", command=on_okay, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
+        ok_button.grid(row=3, column=3, pady=10)
+
         dialog.wait_window(dialog)
-
-        # Retrieve user input
-        new_id = new_id_text.get("1.0", tk.END).strip()
-        new_name = new_name_text.get("1.0", tk.END).strip()
-
-        # Update the UI accordingly
-        new_id_text.insert(tk.END, new_id)
-        new_name_text.insert(tk.END, new_name)
-
-        return new_id, new_name
-
-    def cancel_modification(self, dialog):
-        dialog.destroy()
-        self.start_button.config(text="Start Building !")
+        return mod_id, mod_name
 
     def continue_building(self):
         try:
@@ -344,13 +343,23 @@ class HoshiIsoBuilder:
             subprocess.run(["cls"], shell=True)
 
             # Prompt for ID and Name change
-            new_id, new_name = self.prompt_id_name_change()
+            response = messagebox.askyesno("ID and Name Change", "Do you want to change the ID and name of the game ?")
+            if response:
+                mod_id, mod_name = self.prompt_id_name_change()
 
             # Iso Rebuilding
             print("Rom building:")
             if os.path.exists(destination_path):
                 os.remove(destination_path)
-            subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
+            
+            if mod_id and mod_name == "":
+                print("Mod's details unchanged")
+                subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
+            else:
+                print("Mod's ID:", mod_id)
+                print("Mod's Name:", mod_name)
+                subprocess.run(["wit", "copy", ".\\temp", destination_path, "--id=" + mod_id, "--name=" + mod_name], shell=True)
+
             print("The Iso was successfully created")
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
@@ -404,7 +413,6 @@ class HoshiIsoBuilder:
 
         options_frame = self.root.nametowidget(self.root.winfo_children()[2]) 
         options_frame.config(bg=theme_colors["bg"])
-
 
     def open_github_io(self, url):
         webbrowser.open(url)
@@ -484,4 +492,3 @@ def is_wit_installed():
 if __name__ == "__main__":
     app = HoshiIsoBuilder()
     app.run()
-
