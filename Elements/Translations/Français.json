@@ -1,0 +1,30 @@
+{
+    "start_button": "Démarrer le processus !",
+    "file_types": {
+      "Riivolution file (.xml)": "Fichier Riivolution (.xml)",
+      "Riivolution patch folder": "Dossier du patch Riivolution",
+      "Base Rom (.iso .wbfs)": "Fichier ROM de base (.iso .wbfs)",
+      "Destination Rom (.iso .wbfs)": "Fichier ROM de destination (.iso .wbfs)"
+    },
+    "menu_labels": {
+      "file": "📁 Fichier",
+      "theme": "🎨 Thème",
+      "language": "🌍 Langue",
+      "credits": "⭐ Crédits"
+    },
+    "save_menu": {
+      "save_as": "Enregistrer sous..",
+      "import": "Importer"
+    },
+    "theme_menu": {
+      "dark": "Sombre",
+      "light": "Clair"
+    },
+    "credits_menu": {
+      "gui_by": "Interface graphique par L-DEV (Léo TOSKU)",
+      "system_programming_by": "Système par Humming Owl",
+      "wit_by": "Wit par Wiimm",
+      "gkl_by": "Gecko Loader par JoshuaMKW"
+    }
+  }
+  

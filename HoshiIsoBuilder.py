@@ -11,6 +11,13 @@ import time
 import shutil
 import re
 
+def is_wit_installed():
+    try:
+        subprocess.run(['wit', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
 class HoshiIsoBuilder:
     def __init__(self):
         self.root = tk.Tk()
@@ -18,18 +25,20 @@ class HoshiIsoBuilder:
         self.root.geometry("500x520")
         self.root.resizable(False, False)
 
-        self.menu_bar = None
+        self.menu_bar = tk.Menu(self.root)
+        self.root.config(menu=self.menu_bar)
+
         self.dark_theme = {"bg": "#1e1e1e", "fg": "#ffffff"}
         self.light_theme = {"bg": "#ffffff", "fg": "#000000"}
         self.light_grey = "#7a7aff"
         self.custom_font = ("Helvetica", 12)
 
-        icon_image = Image.open("Elements/icon.png")
+        icon_image = Image.open("Elements/Images/icon.png")
         icon_image = icon_image.resize((32, 32), Image.BICUBIC)  
         icon_photo = ImageTk.PhotoImage(icon_image)
         self.root.iconphoto(True, icon_photo)
 
-        title_image = Image.open("Elements/title.png")
+        title_image = Image.open("Elements/Images/title.png")
         title_image = title_image.resize((280, 70), Image.BICUBIC)
         self.title_texture = ImageTk.PhotoImage(title_image)
 
@@ -40,124 +49,14 @@ class HoshiIsoBuilder:
 
         self.selected_language = "English"
 
-        self.translations = {
-            "English": {
-                "start_button": "Start Building !",
-                "file_types": {
-                    "Riivolution file (.xml)": "Riivolution file (.xml)",
-                    "Riivolution patch folder": "Riivolution patch folder",
-                    "Base Rom (.iso .wbfs)": "Base Rom (.iso .wbfs)",
-                    "Destination Rom (.iso .wbfs)": "Destination Rom (.iso .wbfs)",
-                },
-                "menu_labels": {
-                    "file": "📁 File",
-                    "theme": "🎨 Theme",
-                    "language": "🌎 Language",
-                    "credits": "⭐ Credits",
-                },
-                "save_menu": {
-                    "save_as": "Save as..",
-                    "import": "Import",
-                },
-                "theme_menu": {
-                    "dark": "Dark",
-                    "light": "Light",
-                },
-                "credits_menu": {
-                    "gui_by": "GUI by L-DEV (Léo TOSKU)",
-                    "system_programming_by": "System programming by Humming Owl",
-                    "wit_by": "Wit by Wimm",
-                    "gkl_by": "Gecko Loader by JoshuaMKW",
-                },
-            },
-            "Français": {
-                "start_button": "Démarrer le processus !",
-                "file_types": {
-                    "Riivolution file (.xml)": "Fichier Riivolution (.xml))",
-                    "Riivolution patch folder": "Dossier du patch Riivolution",
-                    "Base Rom (.iso .wbfs)": "Fichier ROM de base (.iso .wbfs)",
-                    "Destination Rom (.iso .wbfs)": "Fichier ROM de destination (.iso .wbfs)",
-                },
-                "menu_labels": {
-                    "file": "📁 Fichier",
-                    "theme": "🎨 Thème",
-                    "language": "🌍 Langue",
-                    "credits": "⭐ Crédits",
-                },
-                "save_menu": {
-                    "save_as": "Enregistrer sous..",
-                    "import": "Importer",
-                },
-                "theme_menu": {
-                    "dark": "Sombre",
-                    "light": "Clair",
-                },
-                "credits_menu": {
-                    "gui_by": "Interface graphique par L-DEV (Léo TOSKU)",
-                    "system_programming_by": "Système par Humming Owl",
-                    "wit_by": "Wit par Wiimm",
-                    "gkl_by": "Gecko Loader par JoshuaMKW",
-                },
-            },
-            "Deutsch": {
-                "start_button": "Start!",
-                "file_types": {
-                    "Riivolution file (.xml)": "Riivolution-Datei (.xml)",
-                    "Riivolution patch folder": "Riivolution Patch-Ordner",
-                    "Base Rom (.iso .wbfs)": "Originale ROM (.iso .wbfs)",
-                    "Destination Rom (.iso .wbfs)": "Neue ROM (.iso .wbfs)",
-                },
-                "menu_labels": {
-                    "file": "📁 Datei",
-                    "theme": "🎨 Design",
-                    "language": "🌍 Sprache",
-                    "credits": "⭐ Credits",
-                },
-                "save_menu": {
-                    "save_as": "Speichern unter..",
-                    "import": "Importieren",
-                },
-                "theme_menu": {
-                    "dark": "Dunkel",
-                    "light": "Hell",
-                },
-                "credits_menu": {
-                    "gui_by": "GUI von L-DEV (Léo TOSKU)",
-                    "system_programming_by": "Systemprogrammierung von Humming Owl",
-                    "wit_by": "Wit von Wiimm",
-                    "gkl_by": "Gecko Loader von JoshuaMKW",
-                },
-            },
-            "日本語": {
-                "start_button": "始める!",
-                "file_types": {
-                    "Riivolution file (.xml)" : "Riivolution ファイルを指定 (.xml)",
-                    "Riivolution patch folder" : "Riivolution パッチフォルダーを指定",
-                    "Base Rom (.iso .wbfs)" : "ベースRomを指定 (.iso .wbfs)",
-                    "Destination Rom (.iso .wbfs)" : "カスタムRomの保存先 (.iso .wbfs)",
-                },
-                "menu_labels": {
-                    "file": " ファイル",
-                    "theme": " テーマ",
-                    "language": " 言語",
-                    "credits": " クレジット",
-                },
-                "save_menu": {
-                    "save_as": "上書き保存..",
-                    "import": "インポート",
-                },
-                "theme_menu": {
-                    "dark": "ダーク",
-                    "light": "ライト",
-                },
-                "credits_menu": {
-                    "gui_by": "GUI設計,デザイン L-DEV (Léo TOSKU)",
-                    "system_programming_by": "システムプログラミング Humming Owl",
-                    "wit_by": "Wit by Wimm",
-                    "gkl_by": "Gecko Loader by JoshuaMKW",
-                },
-            },
-        }
+        # Translations
+        self.translations = {}
+        for lang in ["English", "Français", "Deutsch", "日本語"]:
+            try:
+                with open(f"Elements/translations/{lang}.json", 'r', encoding='utf-8') as file:
+                    self.translations[lang] = json.load(file)
+            except FileNotFoundError:
+                print(f"Translation file for '{lang}' not found.")
 
         self.initialize_ui()
 
@@ -280,6 +179,28 @@ class HoshiIsoBuilder:
             if not os.path.exists(elements_directory):
                 os.makedirs(elements_directory)
 
+            # Cleaning Files START
+            print("Welcome to Hoshi! Let us clean your files before starting...")
+            if os.path.exists('geckoloader-build'):
+                shutil.rmtree('geckoloader-build')
+                print("Custom Code patch files removed")
+            else:
+                print("Custom Code patch files not found. Skip")
+
+            if os.path.exists('bin'):
+                shutil.rmtree('bin')
+                print("Custom Code binaries removed")
+            else:
+                print("Custom Code binaries not found. Skip")
+
+            if os.path.exists('temp'):
+                shutil.rmtree('temp')
+                print("Temporary Game files removed")
+            else:
+                print("temp directory not found. Skip")
+            time.sleep(3)
+            subprocess.run(["cls"], shell=True)
+
             # Region checker
             regionCheck = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if regionCheck.returncode == 0:
@@ -287,15 +208,17 @@ class HoshiIsoBuilder:
                 region_name = ""
 
                 if region_id == "E":
-                    region_name = "North America"
+                    region_name = "USA"
                 elif region_id == "P":
-                    region_name = "Europe"
+                    region_name = "PAL"
                 elif region_id == "K":
-                    region_name = "South Korea"
+                    region_name = "KOR"
                 elif region_id == "J":
-                    region_name = "Japan"
+                    region_name = "JPN"
+                elif region_id == "T":
+                    region_name = "TWN"
                 else:
-                    region_name = "Unknown"
+                    region_name = ""
                 
                 print("Detected Region:", region_name)
                 time.sleep(3)
@@ -308,9 +231,9 @@ class HoshiIsoBuilder:
             # GCT Builder
             custom_code_folder =  riivolution_folder + "/CustomCode"
             print("Building GCT Patch :")
-            subprocess.run([".\\Elements\\start.exe", riivolution_file, custom_code_folder, region_id], shell=True)
+            subprocess.run(["python", "Elements/CustomCodePatching/buildloader.py", region_name]) 
             time.sleep(3)
-            subprocess.run(["cls"], shell=True)
+            subprocess.run(["cls"], shell=True)    
 
             # Rom Extraction
             print("Extracting ROM:")
@@ -321,7 +244,7 @@ class HoshiIsoBuilder:
 
             # Patching Dol
             print("Patching DOL:")
-            subprocess.run(["Elements/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
+            subprocess.run(["Elements/CustomCodePatching/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
             shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
             print("The main.dol file was successfully patched")
             time.sleep(3)
@@ -364,8 +287,8 @@ class HoshiIsoBuilder:
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
             
-            # Cleaning Files
-            print("Cleaning Temp files:")
+            # Cleaning Files END
+            print("Almost done there! Cleaning up the files one last time...")
             shutil.rmtree('geckoloader-build')
             os.remove('codelist.txt')
             print("Custom Code patch files removed")
@@ -481,13 +404,6 @@ class HoshiIsoBuilder:
     def run(self):
         self.update_ui_language()
         self.root.mainloop()
-
-def is_wit_installed():
-    try:
-        subprocess.run(['wit', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        return True
-    except subprocess.CalledProcessError:
-        return False
 
 if __name__ == "__main__":
     app = HoshiIsoBuilder()

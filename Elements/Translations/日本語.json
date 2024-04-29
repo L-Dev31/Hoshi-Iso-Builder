@@ -1,0 +1,30 @@
+{
+    "start_button": "始める!",
+    "file_types": {
+      "Riivolution file (.xml)": "Riivolution ファイルを指定 (.xml)",
+      "Riivolution patch folder": "Riivolution パッチフォルダーを指定",
+      "Base Rom (.iso .wbfs)": "ベースRomを指定 (.iso .wbfs)",
+      "Destination Rom (.iso .wbfs)": "カスタムRomの保存先 (.iso .wbfs)"
+    },
+    "menu_labels": {
+      "file": " ファイル",
+      "theme": " テーマ",
+      "language": " 言語",
+      "credits": " クレジット"
+    },
+    "save_menu": {
+      "save_as": "上書き保存..",
+      "import": "インポート"
+    },
+    "theme_menu": {
+      "dark": "ダーク",
+      "light": "ライト"
+    },
+    "credits_menu": {
+      "gui_by": "GUI設計,デザイン L-DEV (Léo TOSKU)",
+      "system_programming_by": "システムプログラミング Humming Owl",
+      "wit_by": "Wit by Wimm",
+      "gkl_by": "Gecko Loader by JoshuaMKW"
+    }
+  }
+  
