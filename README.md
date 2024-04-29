@@ -1,6 +1,6 @@
 Unfinished
 
-![banner](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/cd43906a-ec52-4b6c-9076-2db51b6eaf57)
+![image](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/3146a1e4-dfc9-481e-816e-438fa81bc666)
 
 **Specifications needed**
 :
