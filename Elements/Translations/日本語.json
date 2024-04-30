@@ -7,10 +7,10 @@
       "Destination Rom (.iso .wbfs)": "カスタムRomの保存先 (.iso .wbfs)"
     },
     "menu_labels": {
-      "file": " ファイル",
-      "theme": " テーマ",
-      "language": " 言語",
-      "credits": " クレジット"
+      "file": "📁 ファイル",
+      "theme": "🎨 テーマ",
+      "language": "🌏 言語",
+      "credits": "⭐ クレジット"
     },
     "save_menu": {
       "save_as": "上書き保存..",
