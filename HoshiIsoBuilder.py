@@ -181,17 +181,11 @@ class HoshiIsoBuilder:
 
             # Cleaning Files START
             print("Welcome to Hoshi! Let us clean your files before starting...")
-            if os.path.exists('geckoloader-build'):
-                shutil.rmtree('geckoloader-build')
-                print("Custom Code patch files removed")
+            if os.path.exists('codelist.txt'):
+                os.remove('codelist.txt')
+                print("Custom Code Cheat file removed")
             else:
-                print("Custom Code patch files not found. Skip")
-
-            if os.path.exists('bin'):
-                shutil.rmtree('bin')
-                print("Custom Code binaries removed")
-            else:
-                print("Custom Code binaries not found. Skip")
+                print("Custom Code Cheat file not found. Skip")
 
             if os.path.exists('temp'):
                 shutil.rmtree('temp')
@@ -231,7 +225,7 @@ class HoshiIsoBuilder:
             # GCT Builder
             custom_code_folder =  riivolution_folder + "/CustomCode"
             print("Building GCT Patch :")
-            subprocess.run(["python", "Elements/CustomCodePatching/buildloader.py", region_name]) 
+            subprocess.run(["Elements/CustomCodePatching/start.exe", riivolution_file, region_id]) 
             time.sleep(3)
             subprocess.run(["cls"], shell=True)    
 
@@ -275,7 +269,7 @@ class HoshiIsoBuilder:
             if os.path.exists(destination_path):
                 os.remove(destination_path)
             
-            if mod_id and mod_name == "":
+            if mod_id == "" and mod_name == "":
                 print("Mod's details unchanged")
                 subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
             else:
@@ -289,13 +283,17 @@ class HoshiIsoBuilder:
             
             # Cleaning Files END
             print("Almost done there! Cleaning up the files one last time...")
-            shutil.rmtree('geckoloader-build')
-            os.remove('codelist.txt')
-            print("Custom Code patch files removed")
-            shutil.rmtree('temp')
-            print("Temporary Game files removed")
-            time.sleep(3)
-            subprocess.run(["cls"], shell=True)
+            if os.path.exists('codelist.txt'):
+                os.remove('codelist.txt')
+                print("Custom Code Cheat file removed")
+            else:
+                print("Custom Code Cheat file not found. Skip")
+
+            if os.path.exists('temp'):
+                shutil.rmtree('temp')
+                print("Temporary Game files removed")
+            else:
+                print("temp directory not found. Skip")
 
             #Success
             messagebox.showinfo("Success", "ROM successfully patched!")
