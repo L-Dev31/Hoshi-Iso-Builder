@@ -1,5 +1,3 @@
-# Hoshi - Universal Wii Iso Builder - L-DEV31 
-
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
@@ -10,6 +8,7 @@ import json
 import time
 import shutil
 import re
+import configparser
 
 def is_wit_installed():
     try:
@@ -21,25 +20,20 @@ def is_wit_installed():
 class HoshiIsoBuilder:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Hoshi v0.2")
+        self.root.title("Hoshi - Universal Wii Iso Builder")
         self.root.geometry("500x520")
         self.root.resizable(False, False)
-
-        self.menu_bar = tk.Menu(self.root)
-        self.root.config(menu=self.menu_bar)
 
         self.dark_theme = {"bg": "#1e1e1e", "fg": "#ffffff"}
         self.light_theme = {"bg": "#ffffff", "fg": "#000000"}
         self.light_grey = "#7a7aff"
         self.custom_font = ("Helvetica", 12)
 
-        icon_image = Image.open("Elements/Images/icon.png")
-        icon_image = icon_image.resize((32, 32), Image.BICUBIC)  
+        icon_image = Image.open("Elements/Images/icon.png").resize((32, 32), Image.BICUBIC)
         icon_photo = ImageTk.PhotoImage(icon_image)
         self.root.iconphoto(True, icon_photo)
 
-        title_image = Image.open("Elements/Images/title.png")
-        title_image = title_image.resize((280, 70), Image.BICUBIC)
+        title_image = Image.open("Elements/Images/title.png").resize((280, 70), Image.BICUBIC)
         self.title_texture = ImageTk.PhotoImage(title_image)
 
         self.file_types = ["Riivolution file (.xml)", "Riivolution patch folder", "Base Rom (.iso .wbfs)", "Destination Rom (.iso .wbfs)"]
@@ -48,8 +42,6 @@ class HoshiIsoBuilder:
         self.start_button = None
 
         self.selected_language = "English"
-
-        # Translations
         self.translations = {}
         for lang in ["English", "Français", "Deutsch", "日本語"]:
             try:
@@ -80,7 +72,6 @@ class HoshiIsoBuilder:
 
             file_path_text = tk.Text(options_frame, height=1, width=40, wrap=tk.WORD, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"], font=self.custom_font)
             file_path_text.pack(pady=5, fill=tk.X)
-
             self.file_paths[file_type] = file_path_text
 
         footer_frame = tk.Frame(self.root, bg=self.dark_theme["bg"])
@@ -168,8 +159,8 @@ class HoshiIsoBuilder:
             riivolution_file = self.file_paths["Riivolution file (.xml)"].get("1.0", tk.END).strip()
             riivolution_folder = self.file_paths["Riivolution patch folder"].get("1.0", tk.END).strip()
             base_rom_file = self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
+            custom_code_folder =  riivolution_folder + "/CustomCode"
 
-            # Check if any required file paths are empty
             if not destination_path or not riivolution_file or not base_rom_file:
                 messagebox.showerror("Error", "Please fill in all required fields.")
                 self.start_button.config(text="Start Building !")
@@ -179,7 +170,7 @@ class HoshiIsoBuilder:
             if not os.path.exists(elements_directory):
                 os.makedirs(elements_directory)
 
-            # Cleaning Files START
+            #Files cleaning
             print("Welcome to Hoshi! Let us clean your files before starting...")
             if os.path.exists('codelist.txt'):
                 os.remove('codelist.txt')
@@ -195,7 +186,7 @@ class HoshiIsoBuilder:
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
 
-            # Region checker
+            #Region Checking
             regionCheck = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             if regionCheck.returncode == 0:
                 region_id = regionCheck.stdout.strip()[3] if regionCheck.stdout else ""
@@ -209,7 +200,7 @@ class HoshiIsoBuilder:
                     region_name = "KOR"
                 elif region_id == "J":
                     region_name = "JPN"
-                elif region_id == "T":
+                elif region_id == "W":
                     region_name = "TWN"
                 else:
                     region_name = ""
@@ -222,29 +213,52 @@ class HoshiIsoBuilder:
                 time.sleep(3)
                 subprocess.run(["cls"], shell=True)
 
-            # GCT Builder
-            custom_code_folder =  riivolution_folder + "/CustomCode"
-            print("Building GCT Patch :")
-            subprocess.run(["Elements/CustomCodePatching/start.exe", riivolution_file, region_id]) 
-            time.sleep(3)
-            subprocess.run(["cls"], shell=True)    
-
-            # Rom Extraction
+            #Base Rom Extracting
             print("Extracting ROM:")
             subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], shell=True)
             print("Base Rom extracted successfully")
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
 
-            # Patching Dol
-            print("Patching DOL:")
-            subprocess.run(["Elements/CustomCodePatching/GeckoLoader.exe", "temp/sys/main.dol", "codelist.txt"])
-            shutil.copy2("geckoloader-build/main.dol", "temp/sys/")
-            print("The main.dol file was successfully patched")
-            time.sleep(3)
-            subprocess.run(["cls"], shell=True)
+            game_id = regionCheck.stdout[:3]
 
-            # Patching Rom
+            #Custom Code Patching
+            if game_id == "SMN":
+                print("New Super Mario Bros. Wii Custom code patching:")
+                print("The custom code patching process is not made yet :/")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+
+            elif game_id == "SB4":
+                print("Building GCT Patch :")
+                #Building Cheatcode patch file
+                subprocess.run(["Elements/CustomCodePatching/start.exe", riivolution_file, region_id]) 
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+                #Patching Custom Code
+                print("Super Mario Galaxy 2 Custom code patching:")
+                print("The custom code patching process is not made yet :/")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+
+            elif game_id == "R64":
+                print("Wii Music Custom code patching:")
+                print("The custom code patching process is not made yet :/")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+            
+            elif game_id == "RMC":
+                print("Mario Kart Wii Custom code patching:")
+                print("The custom code patching process is not made yet :/")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+
+            elif game_id == "RSB":
+                print("Super Smash Bros. Brawl Custom code patching:")
+                print("The custom code patching process is not made yet :/")
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+
             print("Patching ROM:")
             destination_folder = ".\\temp\\files"
             for root, dirs, files in os.walk(riivolution_folder):
@@ -259,17 +273,15 @@ class HoshiIsoBuilder:
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
 
-            # Prompt for ID and Name change
             response = messagebox.askyesno("ID and Name Change", "Do you want to change the ID and name of the game ?")
             if response:
                 mod_id, mod_name = self.prompt_id_name_change()
 
-            # Iso Rebuilding
             print("Rom building:")
             if os.path.exists(destination_path):
                 os.remove(destination_path)
             
-            if mod_id == "" and mod_name == "":
+            if not response:
                 print("Mod's details unchanged")
                 subprocess.run(["wit", "copy", ".\\temp", destination_path], shell=True)
             else:
@@ -281,7 +293,6 @@ class HoshiIsoBuilder:
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
             
-            # Cleaning Files END
             print("Almost done there! Cleaning up the files one last time...")
             if os.path.exists('codelist.txt'):
                 os.remove('codelist.txt')
@@ -295,7 +306,6 @@ class HoshiIsoBuilder:
             else:
                 print("temp directory not found. Skip")
 
-            #Success
             messagebox.showinfo("Success", "ROM successfully patched!")
 
             self.start_button.config(text="Start Building !")
@@ -339,27 +349,29 @@ class HoshiIsoBuilder:
         webbrowser.open(url)
 
     def save_settings(self):
-        settings = {
-            "file_paths": {file_type: self.file_paths[file_type].get("1.0", tk.END).strip() for file_type in self.file_types},
-        }
+        config = configparser.ConfigParser()
+        config["file_paths"] = {}
 
-        file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+        for file_type in self.file_types:
+            config["file_paths"][file_type] = self.file_paths[file_type].get("1.0", tk.END).strip()
+
+        file_path = filedialog.asksaveasfilename(defaultextension=".hoshi", filetypes=[("Hoshi files", "*.hoshi")])
 
         if file_path:
-            with open(file_path, "w") as json_file:
-                json.dump(settings, json_file, indent=4)
+            with open(file_path, "w") as configfile:
+                config.write(configfile)
 
             print(f"Settings saved to: {file_path}")
 
     def import_settings(self):
-        file_path = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
+        file_path = filedialog.askopenfilename(filetypes=[("Hoshi files", "*.hoshi")])
 
         if file_path:
-            with open(file_path, "r") as json_file:
-                settings = json.load(json_file)
+            config = configparser.ConfigParser()
+            config.read(file_path)
 
             for file_type in self.file_types:
-                self.update_file_path(file_type, settings["file_paths"].get(file_type, ""))
+                self.update_file_path(file_type, config["file_paths"].get(file_type, ""))
 
             print(f"Settings imported from: {file_path}")
 

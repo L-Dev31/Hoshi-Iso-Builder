@@ -2,7 +2,7 @@
     "start_button": "Start!",
     "file_types": {
       "Riivolution file (.xml)": "Riivolution-Datei (.xml)",
-      "Riivolution patch folder": "Riivolution Patch-Ordner",
+      "Riivolution patch folder": "Riivolution-Patch-Ordner",
       "Base Rom (.iso .wbfs)": "Originale ROM (.iso .wbfs)",
       "Destination Rom (.iso .wbfs)": "Neue ROM (.iso .wbfs)"
     },
