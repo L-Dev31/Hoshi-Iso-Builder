@@ -172,17 +172,11 @@ class HoshiIsoBuilder:
 
             #Files cleaning
             print("Welcome to Hoshi! Let us clean your files before starting...")
-            if os.path.exists('codelist.txt'):
-                os.remove('codelist.txt')
-                print("Custom Code Cheat file removed")
-            else:
-                print("Custom Code Cheat file not found. Skip")
-
-            if os.path.exists('temp'):
-                shutil.rmtree('temp')
-                print("Temporary Game files removed")
-            else:
-                print("temp directory not found. Skip")
+                #if os.path.exists('temp'):
+                #    shutil.rmtree('temp')
+                #    print("Temporary Game files removed")
+                #else:
+                #    print("temp directory not found. Skip")
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
 
@@ -224,20 +218,19 @@ class HoshiIsoBuilder:
 
             #Custom Code Patching
             if game_id == "SMN":
-                print("New Super Mario Bros. Wii Custom code patching:")
+                print("New Super Mario Bros. Wii detected !")
+                print("------------------------------------")
                 print("The custom code patching process is not made yet :/")
                 time.sleep(3)
                 subprocess.run(["cls"], shell=True)
 
             elif game_id == "SB4":
-                print("Building GCT Patch :")
-                #Building Cheatcode patch file
-                subprocess.run(["Elements/CustomCodePatching/start.exe", riivolution_file, region_id]) 
-                time.sleep(3)
-                subprocess.run(["cls"], shell=True)
-                #Patching Custom Code
-                print("Super Mario Galaxy 2 Custom code patching:")
-                print("The custom code patching process is not made yet :/")
+                print("Super Mario Galaxy 2 detected !")
+                print("-------------------------------")
+                print("Patching Dol File :")
+                #Patching main.dol
+                dol_file = os.path.join(os.path.dirname(__file__), "temp", "sys", "main.dol")
+                subprocess.run(["python", "Elements/CustomCodePatching/dolpatcher.py", region_name, dol_file]) 
                 time.sleep(3)
                 subprocess.run(["cls"], shell=True)
 
@@ -294,11 +287,12 @@ class HoshiIsoBuilder:
             subprocess.run(["cls"], shell=True)
             
             print("Almost done there! Cleaning up the files one last time...")
-            if os.path.exists('codelist.txt'):
-                os.remove('codelist.txt')
-                print("Custom Code Cheat file removed")
+
+            if os.path.exists('Elements\\CustomCodePatching\\Syati-main'):
+                shutil.rmtree("Elements\\CustomCodePatching\\Syati-main")
+                print("Syati main files removed")
             else:
-                print("Custom Code Cheat file not found. Skip")
+                print("Syati main files not found. Skip")
 
             if os.path.exists('temp'):
                 shutil.rmtree('temp')
