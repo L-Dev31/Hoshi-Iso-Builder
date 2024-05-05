@@ -1,5 +1,3 @@
-TEMPORARELY CANCELED
-
 ![image](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/3146a1e4-dfc9-481e-816e-438fa81bc666)
 
 **Specifications needed**
@@ -29,7 +27,7 @@ TEMPORARELY CANCELED
 6. Enjoy !
 
 **Credits** : 
-**Hoshi v0.1 - System by Humming Owl, Design by L-Dev**
+**Hoshi v0.3 - System by Humming Owl, Design by L-Dev**
 
 English translations (by L-DEV)
 
@@ -38,4 +36,6 @@ French translations (by L-DEV)
 German translations (by Bavario)
 
 Japanese translations (by ぺんぐいん)
+
+**Special Thanks** : JoshuaMK, Lord Gigantus
 
