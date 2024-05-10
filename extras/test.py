@@ -159,6 +159,7 @@ class HoshiIsoBuilder:
             riivolution_file = self.file_paths["Riivolution file (.xml)"].get("1.0", tk.END).strip()
             riivolution_folder = self.file_paths["Riivolution patch folder"].get("1.0", tk.END).strip()
             base_rom_file = self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()
+            custom_code_folder =  riivolution_folder + "/CustomCode"
 
             if not destination_path or not riivolution_file or not base_rom_file:
                 messagebox.showerror("Error", "Please fill in all required fields.")
@@ -179,9 +180,41 @@ class HoshiIsoBuilder:
             time.sleep(3)
             subprocess.run(["cls"], shell=True)
 
-            #ID Checking
-            idCheck = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            game_id = idCheck.stdout[:3]
+            #Region Checking
+            regionCheck = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            if regionCheck.returncode == 0:
+                region_id = regionCheck.stdout.strip()[3] if regionCheck.stdout else ""
+                region_name = ""
+
+                if region_id == "E":
+                    region_name = "USA"
+                elif region_id == "P":
+                    region_name = "PAL"
+                elif region_id == "K":
+                    region_name = "KOR"
+                elif region_id == "J":
+                    region_name = "JPN"
+                elif region_id == "W":
+                    region_name = "TWN"
+                else:
+                    region_name = ""
+                
+                print("Detected Region:", region_name)
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+            else:
+                print("Error executing command:", regionCheck.stderr)
+                time.sleep(3)
+                subprocess.run(["cls"], shell=True)
+
+            #Base Rom Extracting
+            print("Extracting ROM:")
+            subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], shell=True)
+            print("Base Rom extracted successfully")
+            time.sleep(3)
+            subprocess.run(["cls"], shell=True)
+
+            game_id = regionCheck.stdout[:3]
 
             #Custom Code Patching
             if game_id == "SMN":
@@ -194,7 +227,10 @@ class HoshiIsoBuilder:
             elif game_id == "SB4":
                 print("Super Mario Galaxy 2 detected !")
                 print("-------------------------------")
-                subprocess.run(["python", "Elements/CCPatching/riiv_patch.py", {base_rom_file}, {riivolution_file}, {riivolution_folder}, "smg0"]) 
+                print("Patching Dol File :")
+                #Patching main.dol
+                dol_file = os.path.join(os.path.dirname(__file__), "temp", "sys", "main.dol")
+                subprocess.run(["python", "Elements/CustomCodePatching/dolpatcher.py", region_name, dol_file]) 
                 time.sleep(3)
                 subprocess.run(["cls"], shell=True)
 
@@ -218,7 +254,7 @@ class HoshiIsoBuilder:
 
             print("Patching ROM:")
             destination_folder = ".\\temp\\files"
-            for root, files in os.walk(riivolution_folder):
+            for root, dirs, files in os.walk(riivolution_folder):
                 for file in files:
                     src_path = os.path.join(root, file)
                     relative_path = os.path.relpath(src_path, riivolution_folder)
