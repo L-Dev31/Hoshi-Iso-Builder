@@ -6,7 +6,7 @@
 # modify Hoshi, but you must adhere to the following conditions:
 #
 # - Credit the original work ("Hoshi") and its creators: L-DEV (Léo TOSKU) and 
-#   Humming Owl (name).
+#   Humming Owl (Isaac LIENDO).
 #
 # See the LICENSE file for more details.
 #------------------------------------------------------------------------------
