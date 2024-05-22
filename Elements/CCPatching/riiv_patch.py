@@ -4,7 +4,7 @@ from textwrap import wrap
 
 # custom import (C-like include)
 # geckoloader_path and wit_path will be defined there
-exec(open("bin_tool_setup.py").read())
+exec(open("Elements/CCPatching/bin_tool_setup.py").read())
 
 # function to check if the game image is valid
 def check_game_image(game_image_path):
@@ -220,7 +220,7 @@ def exec_riiv_patch(game_image_path, riiv_xml_path, mod_files_path, patches_id):
         tmpf.write("%s " % (valuelist[i]))
       else:
         tmpf.write("%s\n" % (valuelist[i])) 
-  tmpf.close() # I cannot believe I forgot to close the file
+  tmpf.close()
   
   # apply geckoloader and wit patches to main.dol
   if (len(geckoloader_patches) != 0):
@@ -234,13 +234,5 @@ def exec_riiv_patch(game_image_path, riiv_xml_path, mod_files_path, patches_id):
       print(exec_subprocess([wit_path, "dolpatch", "temp/sys/main_1.dol", "XML=temp.xml", "--source", mod_files_path, "--dest", "temp/sys/main_2.dol"]).stdout)
       shutil.move("temp/sys/main_2.dol", "temp/sys/main.dol")
       os.remove("temp/sys/main_1.dol")
-  
-  # build game image file
-  exec_subprocess([wit_path, "copy", "temp/", "result.wbfs"])
-  
-  # eliminate temp files
-  shutil.rmtree("temp/")
-  os.remove("temp.xml")
-  os.remove("temp.txt")
   
   # done! (hopefully)
