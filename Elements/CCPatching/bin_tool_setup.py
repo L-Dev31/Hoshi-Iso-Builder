@@ -19,11 +19,11 @@ def exec_subprocess(str_list):
 geckoloader_path = None
 wit_path = None
 if (SYSTEM_OS == WINDOWS):
-  geckoloader_path = ["py", "-3.8", "tools/geckoloader/GeckoLoader.py"]
-  wit_path = "tools/wit/windows/wit.exe"
+  geckoloader_path = ["py", "-3.8", "Elements/CCPatching/tools/geckoloader/GeckoLoader.py"]
+  wit_path = "Elements/CCPatching/tools/wit/windows/wit.exe"
 elif (SYSTEM_OS == LINUX):
-  geckoloader_path = ["python3.8", "tools/geckoloader/GeckoLoader.py"]
-  wit_path = "tools/wit/linux/wit"
+  geckoloader_path = ["python3.8", "Elements/CCPatching/tools/geckoloader/GeckoLoader.py"]
+  wit_path = "Elements/CCPatching/tools/wit/linux/wit"
 
 # ~ exec_subprocess(wit_path) 
 # ~ exec_subprocess(geckoloader_path) 

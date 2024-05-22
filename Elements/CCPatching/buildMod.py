@@ -23,7 +23,8 @@ import tkinter as tk
 from tkinter import messagebox
 
 # Local module imports
-from Elements.CCPatching.bin_tool_setup import exec_subprocess, wit_path, geckoloader_path
+from Elements.CCPatching.bin_tool_setup import exec_subprocess, wit_path
+from Elements.CCPatching.riiv_patch import exec_riiv_patch
 
 class ROMBuilder:
     def __init__(self, root, file_paths, start_button):
@@ -32,11 +33,19 @@ class ROMBuilder:
         self.start_button = start_button
 
     def prompt_id_name_change(self):
-        idCheck = subprocess.run(["wit", "ID6", self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        # Set window's colors and fonts
+        self.dark_theme = {"bg": "#1e1e1e", "fg": "#ffffff"}
+        self.light_theme = {"bg": "#ffffff", "fg": "#000000"}
+        self.light_grey = "#7a7aff"
+        self.custom_font = ("Helvetica", 12)
+
+        # Check the ID of the Game
+        idCheck = exec_subprocess([wit_path, "ID6", self.file_paths["Base Rom (.iso .wbfs)"].get("1.0", tk.END).strip()])
         if idCheck.returncode == 0:
             original_id = idCheck.stdout.strip() if idCheck.stdout else ""
 
-        nameCheck = subprocess.run(["wit", "ANAID", original_id], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        # Check the Name of the Game
+        nameCheck = exec_subprocess([wit_path, "ANAID", original_id])
 
         if nameCheck.returncode == 0:
             match = re.search(r'Game Title\s+-+\s+(.*)', nameCheck.stdout)
@@ -143,27 +152,31 @@ class ROMBuilder:
         else:
             print("temp directory not found. Skip")
         time.sleep(1)
+        os.system('cls' if os.name == 'nt' else 'clear')
 
     def extract_rom(self, base_rom_file):
         print("Extracting ROM:")
-        subprocess.run(["wit", "extract", base_rom_file, ".\\temp"], check=True, shell=True)
+        exec_subprocess([wit_path, "extract", base_rom_file, ".\\temp"])
         print("Base Rom extracted successfully")
         time.sleep(1)
+        os.system('cls' if os.name == 'nt' else 'clear')
 
     def check_id(self, base_rom_file):
-        id_check = subprocess.run(["wit", "ID6", base_rom_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        id_check = exec_subprocess([wit_path, "ID6", base_rom_file])
         game_id = id_check.stdout[:3]
         return game_id
 
     def custom_code_patching(self, game_id, base_rom_file, riivolution_file, riivolution_folder):
-        if game_id == "SMN":
-            print("New Super Mario Bros. Wii detected!")
-            print("Custom code patching process is not made yet.")
-        elif game_id == "SB4":
+        if game_id == "SB4":
             print("Super Mario Galaxy 2 detected!")
-            subprocess.run(["python", "Elements/CCPatching/riiv_patch.py", base_rom_file, riivolution_file, riivolution_folder, "smg0"], check=True, shell=True)
-        elif game_id in ["R64", "RMC", "RSB"]:
+            # Options selections
+            print("Options selection isn't made yet...")  
+            # Custom code patching
+            exec_riiv_patch([base_rom_file],[riivolution_file],[riivolution_folder],["smg0"])
+        
+        elif game_id in ["R64", "RMC", "RSB", "SMN"]:
             game_name = {
+                "SMN": "New Super Mario Bros. Wii",
                 "R64": "Wii Music",
                 "RMC": "Mario Kart Wii",
                 "RSB": "Super Smash Bros. Brawl"
@@ -173,6 +186,7 @@ class ROMBuilder:
         else:
             print("Unknown game detected!")
         time.sleep(1)
+        os.system('cls' if os.name == 'nt' else 'clear')
 
     def patch_rom(self, riivolution_folder):
         print("Patching ROM:")
@@ -187,6 +201,7 @@ class ROMBuilder:
                 shutil.copy2(src_path, dest_path)
         print("All files copied and replaced.")
         time.sleep(1)
+        os.system('cls' if os.name == 'nt' else 'clear')
 
     def build_rom(self, destination_path):
         print("Rom building:")
@@ -197,11 +212,12 @@ class ROMBuilder:
         response = messagebox.askyesno("ID and Name Change", "Do you want to change the ID and name of the game?")
         if response:
             mod_id, mod_name = self.prompt_id_name_change()
-            subprocess.run(["wit", "copy", ".\\temp", destination_path, "--id=" + mod_id, "--name=" + mod_name], check=True, shell=True)
+            exec_subprocess([wit_path, "copy", ".\\temp", destination_path, "--id=" + mod_id, "--name=" + mod_name])
         else:
-            subprocess.run(["wit", "copy", ".\\temp", destination_path], check=True, shell=True)
+            exec_subprocess([wit_path, "copy", ".\\temp", destination_path])
         print("The Iso was successfully created")
         time.sleep(1)
+        os.system('cls' if os.name == 'nt' else 'clear')
 
     def cleanup_files(self):
         print("Almost done! Cleaning up the files one last time...")
@@ -218,5 +234,3 @@ class ROMBuilder:
         else:
             print("temp directory not found. Skip")
 
-    def prompt_id_name_change(self):
-        return "MODID", "MODNAME"
