@@ -1,3 +1,16 @@
+#------------------------------------------------------------------------------
+# This file is part of Hoshi - Wii ISO Builder.
+#
+# Hoshi is free and open-source software released under the GNU General Public
+# License version 3 or any later version. You are free to redistribute and/or
+# modify Hoshi, but you must adhere to the following conditions:
+#
+# - Credit the original work ("Hoshi") and its creators: L-DEV (Léo TOSKU) and 
+#   Humming Owl (Isaac LIENDO).
+#
+# See the LICENSE file for more details.
+#------------------------------------------------------------------------------
+
 import sys
 import subprocess
 from enum import Enum
