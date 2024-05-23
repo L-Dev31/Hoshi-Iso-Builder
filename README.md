@@ -27,14 +27,12 @@
 6. Enjoy !
 
 **Credits** : 
-**Hoshi v0.3 - System by Humming Owl, Design by L-Dev**
+**Code patching system by Humming Owl
+GUI, system and designs by L-Dev**
 
 English translations (by L-DEV)
-
 French translations (by L-DEV)
-
 German translations (by Bavario)
-
 Japanese translations (by ぺんぐいん)
 
 **Special Thanks** : JoshuaMK, Lord Gigantus
