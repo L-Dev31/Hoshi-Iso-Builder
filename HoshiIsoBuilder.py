@@ -1,5 +1,6 @@
 #------------------------------------------------------------------------------
 # This file is part of Hoshi - Wii ISO Builder.
+# by L-DEV (Léo TOSKU)
 #
 # Hoshi is free and open-source software released under the GNU General Public
 # License version 3 or any later version. You are free to redistribute and/or
@@ -23,9 +24,10 @@ import subprocess
 import webbrowser
 import json
 import configparser
+import os
 
 # Local module import
-from Elements.buildMod import ROMBuilder
+from Elements.CCPatching.hoshiGeneralProcess import ROMBuilder
 
 class HoshiIsoBuilder:
     def __init__(self):
@@ -34,11 +36,22 @@ class HoshiIsoBuilder:
         self.root.geometry("500x520")
         self.root.resizable(False, False)
 
+        # Load settings from settings.ini
+        config = configparser.ConfigParser()
+        config.read("settings.ini", encoding="utf-8")
+        self.selected_theme = config.get("settings", "theme", fallback="Dark")
+        self.selected_language = config.get("settings", "language", fallback="English")
+
+        # Define theme and language dictionaries
         self.dark_theme = {"bg": "#1e1e1e", "fg": "#ffffff"}
         self.light_theme = {"bg": "#ffffff", "fg": "#000000"}
-        self.light_grey = "#7a7aff"
+        self.purple = "#7a7aff"
         self.custom_font = ("Helvetica", 12)
 
+        # Initialize title_label
+        self.title_label = None
+
+        # Load images
         icon_image = Image.open("Elements/Images/icon.png").resize((32, 32), Image.BICUBIC)
         icon_photo = ImageTk.PhotoImage(icon_image)
         self.root.iconphoto(True, icon_photo)
@@ -46,11 +59,11 @@ class HoshiIsoBuilder:
         title_image = Image.open("Elements/Images/title.png").resize((280, 70), Image.BICUBIC)
         self.title_texture = ImageTk.PhotoImage(title_image)
 
+        # Define file types
         self.file_types = ["Riivolution file (.xml)", "Riivolution patch folder", "Base Rom (.iso .wbfs)", "Destination Rom (.iso .wbfs)"]
         self.file_paths = {}
         self.file_type_buttons = []
         self.start_button = None
-        self.selected_language = "English"
         self.translations = {}
         for lang in ["English", "Français", "Deutsch", "日本語"]:
             try:
@@ -61,6 +74,11 @@ class HoshiIsoBuilder:
 
         self.initialize_ui()
         self.rom_builder = ROMBuilder(self.root, self.file_paths, self.start_button)
+
+        # Apply loaded settings as if the user changed them
+        self.set_theme(self.selected_theme)
+        self.set_language(self.selected_language)
+
 
     def initialize_ui(self):
         self.menu_bar = tk.Menu(self.root)
@@ -76,7 +94,7 @@ class HoshiIsoBuilder:
         options_frame.pack(pady=10)
 
         for file_type in self.file_types:
-            option_button = tk.Button(options_frame, text=file_type, font=self.custom_font, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, command=lambda ft=file_type: self.open_file(ft))
+            option_button = tk.Button(options_frame, text=file_type, font=self.custom_font, bg=self.purple, fg="#ffffff", relief=tk.FLAT, command=lambda ft=file_type: self.open_file(ft))
             option_button.pack(pady=5, fill=tk.X)
             self.file_type_buttons.append(option_button)
 
@@ -87,14 +105,11 @@ class HoshiIsoBuilder:
         footer_frame = tk.Frame(self.root, bg=self.dark_theme["bg"])
         footer_frame.pack(pady=10)
 
-        self.start_button = tk.Button(self.root, text="Start Building !", command=self.start_building, font=self.custom_font, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=20, pady=10, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
+        self.start_button = tk.Button(self.root, text="Start Building !", command=self.start_building, font=self.custom_font, bg=self.purple, fg="#ffffff", relief=tk.FLAT, bd=0, padx=20, pady=10, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
         self.start_button.pack(pady=20, fill=tk.X)
         self.update_ui_language()
 
     def start_building(self):
-        if not self.is_wit_installed():
-            messagebox.showerror("Error", "The 'wit' command-line tool is not installed.")
-            return
 
         messagebox.showinfo("Warning", "During the process, ensure not to touch any files, turn off your computer, load your ISO on an emulator (e.g., Dolphin Emulator), uninstall Python or any other component, or modify any system files. The ISO patching process may take some time depending on your computer, so please be patient.")
         
@@ -107,13 +122,6 @@ class HoshiIsoBuilder:
             messagebox.showerror("Error", f"An error occurred during the building process: {e}")
             self.start_button.config(text="Start Building")
             self.root.update()
-
-    def is_wit_installed(self):
-        try:
-            subprocess.run(["wit", "--version"], check=True)
-            return True
-        except subprocess.CalledProcessError:
-            return False
         
     def open_file(self, file_type):
         if file_type == "Riivolution file (.xml)":
@@ -140,28 +148,28 @@ class HoshiIsoBuilder:
 
         for file_type, button in zip(self.file_types, self.file_type_buttons):
             self.file_paths[file_type].config(bg=theme_colors["bg"], fg=theme_colors["fg"])
-            button.config(bg=self.light_grey, fg="#fff")
+            button.config(bg=self.purple, fg="#fff")
 
         options_frame = self.root.nametowidget(self.root.winfo_children()[2]) 
         options_frame.config(bg=theme_colors["bg"])
 
+        # Save theme to settings.ini
+        self.save_settings(theme=theme, language=self.selected_language)
+
     def open_github_io(self, url):
         webbrowser.open(url)
 
-    def save_settings(self):
+    def save_settings(self, theme=None, language=None):
         config = configparser.ConfigParser()
-        config["file_paths"] = {}
+        config["settings"] = {}
 
-        for file_type in self.file_types:
-            config["file_paths"][file_type] = self.file_paths[file_type].get("1.0", tk.END).strip()
+        if theme:
+            config["settings"]["theme"] = theme
+        if language:
+            config["settings"]["language"] = language
 
-        file_path = filedialog.asksaveasfilename(defaultextension=".hoshi", filetypes=[("Hoshi files", "*.hoshi")])
-
-        if file_path:
-            with open(file_path, "w") as configfile:
-                config.write(configfile)
-
-            print(f"Settings saved to: {file_path}")
+        with open("settings.ini", "w", encoding="utf-8") as configfile:
+            config.write(configfile)
 
     def import_settings(self):
         file_path = filedialog.askopenfilename(filetypes=[("Hoshi files", "*.hoshi")])
@@ -179,6 +187,9 @@ class HoshiIsoBuilder:
         self.selected_language = language
         self.update_ui_language()
 
+        # Save language to settings.ini
+        self.save_settings(theme=self.selected_theme, language=language)
+
     def update_ui_language(self):
         current_translations = self.translations.get(self.selected_language, self.translations["English"])
 
@@ -190,7 +201,7 @@ class HoshiIsoBuilder:
         self.menu_bar.delete(0, tk.END)
 
         save_menu = tk.Menu(self.menu_bar, tearoff=0)
-        save_menu.add_command(label=current_translations["save_menu"]["save_as"], command=self.save_settings)
+        save_menu.add_command(label=current_translations["save_menu"]["save_as"], command=self.import_settings)
         save_menu.add_command(label=current_translations["save_menu"]["import"], command=self.import_settings)
         self.menu_bar.add_cascade(label=current_translations["menu_labels"]["file"], menu=save_menu)
 

@@ -1,5 +1,6 @@
 #------------------------------------------------------------------------------
 # This file is part of Hoshi - Wii ISO Builder.
+# by L-DEV (Léo TOSKU)
 #
 # Hoshi is free and open-source software released under the GNU General Public
 # License version 3 or any later version. You are free to redistribute and/or
@@ -16,15 +17,14 @@ import os
 import re
 import time
 import shutil
-import subprocess
 
 # Tkinter imports for GUI
 import tkinter as tk
 from tkinter import messagebox
 
 # Local module imports
-from Elements.CCPatching.bin_tool_setup import exec_subprocess, wit_path
-from Elements.CCPatching.riiv_patch import exec_riiv_patch
+from Elements.CCPatching.hoshiBinaryToolsSetup import exec_subprocess, wit_path
+from Elements.CCPatching import hoshiRiivolutionSettingsSelection
 
 class ROMBuilder:
     def __init__(self, root, file_paths, start_button):
@@ -36,7 +36,7 @@ class ROMBuilder:
         # Set window's colors and fonts
         self.dark_theme = {"bg": "#1e1e1e", "fg": "#ffffff"}
         self.light_theme = {"bg": "#ffffff", "fg": "#000000"}
-        self.light_grey = "#7a7aff"
+        self.purple = "#7a7aff"
         self.custom_font = ("Helvetica", 12)
 
         # Check the ID of the Game
@@ -64,9 +64,9 @@ class ROMBuilder:
         tk.Label(dialog, text="Original", font=self.custom_font, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=0, column=0, columnspan=2, sticky="w")
         tk.Label(dialog, text="ID :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=1, column=0, sticky="w")
         tk.Label(dialog, text="Name :", bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=2, column=0, sticky="w")
-        original_id_text = tk.Label(dialog, text=original_id, bg=self.dark_theme["bg"], fg=self.light_grey, font=self.custom_font)
+        original_id_text = tk.Label(dialog, text=original_id, bg=self.dark_theme["bg"], fg=self.purple, font=self.custom_font)
         original_id_text.grid(row=1, column=1, sticky="w")
-        original_name_text = tk.Label(dialog, text=original_name, bg=self.dark_theme["bg"], fg=self.light_grey, font=self.custom_font)
+        original_name_text = tk.Label(dialog, text=original_name, bg=self.dark_theme["bg"], fg=self.purple, font=self.custom_font)
         original_name_text.grid(row=2, column=1, sticky="w")
 
         tk.Label(dialog, text="New", font=self.custom_font, bg=self.dark_theme["bg"], fg=self.dark_theme["fg"]).grid(row=0, column=2, columnspan=2)
@@ -92,9 +92,9 @@ class ROMBuilder:
             mod_name = ""
             dialog.destroy()
 
-        cancel_button = tk.Button(dialog, text="Cancel", command=on_cancel, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
+        cancel_button = tk.Button(dialog, text="Cancel", command=on_cancel, bg=self.purple, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
         cancel_button.grid(row=3, column=1, pady=10)
-        ok_button = tk.Button(dialog, text="OK", command=on_okay, bg=self.light_grey, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
+        ok_button = tk.Button(dialog, text="OK", command=on_okay, bg=self.purple, fg="#ffffff", relief=tk.FLAT, bd=0, padx=10, pady=5, borderwidth=0, highlightthickness=0, overrelief="flat", activebackground="#5555ff", activeforeground="#ffffff")
         ok_button.grid(row=3, column=3, pady=10)
 
         dialog.wait_window(dialog)
@@ -113,20 +113,21 @@ class ROMBuilder:
             elements_directory = "Elements"
             os.makedirs(elements_directory, exist_ok=True)
 
-            # Files cleaning START
+            # Clean temporary files before starting
             self.clean_files()
-            # Extract ROM
+            # Extract the base ROM
             self.extract_rom(base_rom_file)
-            game_id = self.check_id(base_rom_file)
-            # Custom code patching
-            self.custom_code_patching(game_id, base_rom_file, riivolution_file, riivolution_folder)
-            # Patch ROM
+            # Check the game ID
+            game_id = self.check_id(base_rom_file)            
+            # Patch the ROM with the selected patches
             self.patch_rom(riivolution_folder)
-            # Build ROM
+            # Run the Riivolution settings selection and apply patches
+            self.custom_code_patching(game_id, base_rom_file, riivolution_file, riivolution_folder)
+            # Build the final ROM
             self.build_rom(destination_path)
-            # Files END
-            self.cleanup_files()
-            # Success
+            # Clean temporary files after completion
+            self.clean_files()
+            # Success message
             messagebox.showinfo("Success", "ROM successfully patched!")
         except Exception as e:
             messagebox.showerror("Error", str(e))
@@ -135,7 +136,7 @@ class ROMBuilder:
             self.root.update()
 
     def clean_files(self):
-        print("Welcome to Hoshi! Let us clean your files before starting...")
+        print("Cleaning Files...")
 
         # Patch Files
         if os.path.exists("temp.xml"):
@@ -167,24 +168,7 @@ class ROMBuilder:
         return game_id
 
     def custom_code_patching(self, game_id, base_rom_file, riivolution_file, riivolution_folder):
-        if game_id == "SB4":
-            print("Super Mario Galaxy 2 detected!")
-            # Options selections
-            print("Options selection isn't made yet...")  
-            # Custom code patching
-            exec_riiv_patch([base_rom_file],[riivolution_file],[riivolution_folder],["smg0"])
-        
-        elif game_id in ["R64", "RMC", "RSB", "SMN"]:
-            game_name = {
-                "SMN": "New Super Mario Bros. Wii",
-                "R64": "Wii Music",
-                "RMC": "Mario Kart Wii",
-                "RSB": "Super Smash Bros. Brawl"
-            }.get(game_id, "Custom code patching")
-            print(f"{game_name} detected!")
-            print("Custom code patching process is not made yet.")
-        else:
-            print("Unknown game detected!")
+        hoshiRiivolutionSettingsSelection.run_hrss(base_rom_file,riivolution_file,riivolution_folder)
         time.sleep(1)
         os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -219,18 +203,4 @@ class ROMBuilder:
         time.sleep(1)
         os.system('cls' if os.name == 'nt' else 'clear')
 
-    def cleanup_files(self):
-        print("Almost done! Cleaning up the files one last time...")
-        syati_main = 'Elements\\CustomCodePatching\\Syati-main'
-        if os.path.exists(syati_main):
-            shutil.rmtree(syati_main)
-            print("Syati main files removed")
-        else:
-            print("Syati main files not found. Skip")
-
-        if os.path.exists('temp'):
-            shutil.rmtree('temp')
-            print("Temporary Game files removed")
-        else:
-            print("temp directory not found. Skip")
 
