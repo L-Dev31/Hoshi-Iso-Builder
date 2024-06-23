@@ -1,8 +1,44 @@
 import sys
 import tkinter as tk
 from tkinter import ttk, messagebox
-import xml.etree.ElementTree as ET
+import configparser
+import json
+import os
 from Elements.CCPatching import hoshiRiivolutionPatcher
+
+# Lire le fichier settings.ini en UTF-8
+config = configparser.ConfigParser()
+with open('settings.ini', 'r', encoding='utf-8') as f:
+    config.read_file(f)
+
+theme = config['settings']['theme']
+language = config['settings']['language']
+
+# Charger le fichier de traduction correspondant
+translation_file = f'Elements/translations/{language}.json'
+if not os.path.exists(translation_file):
+    print(f"Translation file {translation_file} not found")
+    sys.exit(1)
+
+with open(translation_file, 'r', encoding='utf-8') as f:
+    translations = json.load(f)
+
+# Définir les couleurs et styles pour les thèmes
+if theme == "Dark":
+    bg_color = "#1e1e1e"
+    fg_color = "#ffffff"
+    button_bg_color = "#7a7aff"
+    button_fg_color = "#ffffff"
+    section_fg_color = "#7a7aff"
+elif theme == "Light":
+    bg_color = "#ffffff"
+    fg_color = "#000000"
+    button_bg_color = "#7a7aff"
+    button_fg_color = "#ffffff"
+    section_fg_color = "#7a7aff"
+else:
+    print(f"Unknown theme: {theme}")
+    sys.exit(1)
 
 def run_hrss(iso_file, xml_file, mod_folder):
     sections = hoshiRiivolutionPatcher.get_xml_patches(xml_file)
@@ -10,20 +46,20 @@ def run_hrss(iso_file, xml_file, mod_folder):
     def create_option_menu(parent, option):
         option_name = option[0]
         if option_name:
-            label = tk.Label(parent, text=option_name, font=("Helvetica", 14), bg="#1e1e1e", fg="#ffffff")
+            label = tk.Label(parent, text=translations.get(option_name, option_name), font=("Helvetica", 14), bg=bg_color, fg=fg_color)
             label.pack(pady=10)
 
             choices = option[1]
-            choice_patches = {choice[0]: choice[1] for choice in choices}  # Dictionary of choice name to patch ids
+            choice_patches = {translations.get(choice[0], choice[0]): choice[1] for choice in choices}  # Dictionary of choice name to patch ids
 
             var = tk.StringVar(parent)
 
-            default_choice = "" if option_name.lower() == "disabled" else "Disabled"
+            default_choice = translations.get("Disabled", "Disabled")
             var.set(default_choice)
 
-            dropdown_values = list(choice_patches.keys()) + ["Disabled"]
+            dropdown_values = list(choice_patches.keys()) + [translations.get("Disabled", "Disabled")]
 
-            dropdown = ttk.Combobox(parent, textvariable=var, values=dropdown_values, state="readonly", font=("Helvetica", 12), style="Dark.TCombobox")
+            dropdown = ttk.Combobox(parent, textvariable=var, values=dropdown_values, state="readonly", font=("Helvetica", 12), style="TCombobox")
             dropdown.pack()
 
             return label.winfo_reqheight() + dropdown.winfo_reqheight() + 10, choice_patches, var
@@ -38,7 +74,7 @@ def run_hrss(iso_file, xml_file, mod_folder):
         for section in sections:
             section_name = section[0]
             if section_name:
-                label = tk.Label(parent, text=section_name, font=("Helvetica", 16), bg="#1e1e1e", fg="#7a7aff")
+                label = tk.Label(parent, text=translations.get(section_name, section_name), font=("Helvetica", 16), bg=bg_color, fg=section_fg_color)
                 label.pack(pady=10)
                 total_height += label.winfo_reqheight() + 10
 
@@ -59,7 +95,7 @@ def run_hrss(iso_file, xml_file, mod_folder):
         for (section_name, option_name), (var, choice_patches) in variables.items():
             choice_var = var.get()
             
-            if choice_var == "Disabled":
+            if choice_var == translations.get("Disabled", "Disabled"):
                 disable_count += 1
             else:
                 selected_patches[(section_name, option_name)] = choice_patches[choice_var]
@@ -94,8 +130,8 @@ def run_hrss(iso_file, xml_file, mod_folder):
         hoshiRiivolutionPatcher.apply_patches(iso_file, xml_file, mod_folder, patch_ids)
     else:
         root = tk.Tk()
-        root.title("Riivolution Settings Selector")
-        root.configure(bg="#1e1e1e")
+        root.title(translations.get("Riivolution Settings Selector", "Riivolution Settings Selector"))
+        root.configure(bg=bg_color)
 
         window_height, all_patches, variables = create_section(root, sections)
         window_height += 150
@@ -104,9 +140,13 @@ def run_hrss(iso_file, xml_file, mod_folder):
 
         style = ttk.Style()
         style.theme_use('clam')
-        style.configure("TCombobox", relief="flat")
+        style.configure("TCombobox", fieldbackground=bg_color, background="#ffffff", foreground="#000000", arrowcolor="black", arrowsize=15)
+        style.configure("TButton", background=button_bg_color, foreground=button_fg_color)
 
-        confirm_button = tk.Button(root, text="Confirm", width=10, command=lambda: confirm_settings(sections, all_patches, variables), font=("Helvetica", 12), bg="#7a7aff", fg="#ffffff", relief="flat")
+        confirm_button = tk.Button(root, text=translations.get("Confirm", "Confirm"), width=10, command=lambda: confirm_settings(sections, all_patches, variables), font=("Helvetica", 12), bg=button_bg_color, fg=button_fg_color, relief="flat")
         confirm_button.pack(pady=10)
 
         root.mainloop()
+
+# Exemple d'appel de la fonction (à ajuster en fonction de vos besoins)
+# run_hrss("path/to/iso_file.iso", "path/to/xml_file.xml", "path/to/mod_folder")
