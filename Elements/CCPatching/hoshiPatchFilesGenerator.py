@@ -41,6 +41,8 @@ def generate_temp_xml(root, patch_elems, patches_id, game_reg):
         for mem in patch:
             if "target" in mem.attrib and mem.attrib["target"] != game_reg:
                 patch.remove(mem)
+            elif "target" in mem.attrib:
+                mem.attrib.pop("target")
     
     tree = ET.ElementTree(root)
     tree.write("temp.xml")

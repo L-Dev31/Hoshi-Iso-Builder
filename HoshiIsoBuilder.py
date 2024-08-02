@@ -179,9 +179,24 @@ class HoshiIsoBuilder:
             config.read(file_path)
 
             for file_type in self.file_types:
-                self.update_file_path(file_type, config["file_paths"].get(file_type, ""))
+                file_path_value = config["file_paths"].get(file_type, "")
+                self.update_file_path(file_type, file_path_value)
 
             print(f"Settings imported from: {file_path}")
+
+    def save_settings_as(self):
+        paths = {file_type: text_widget.get(1.0, tk.END).strip() for file_type, text_widget in self.file_paths.items()}
+
+        file_path = filedialog.asksaveasfilename(defaultextension=".hoshi", filetypes=[("Hoshi files", "*.hoshi")])
+
+        if file_path:
+            config = configparser.ConfigParser()
+            config["file_paths"] = paths
+
+            with open(file_path, 'w') as configfile:
+                config.write(configfile)
+
+            print(f"Settings saved to: {file_path}")
 
     def set_language(self, language):
         self.selected_language = language
@@ -201,7 +216,7 @@ class HoshiIsoBuilder:
         self.menu_bar.delete(0, tk.END)
 
         save_menu = tk.Menu(self.menu_bar, tearoff=0)
-        save_menu.add_command(label=current_translations["save_menu"]["save_as"], command=self.import_settings)
+        save_menu.add_command(label=current_translations["save_menu"]["save_as"], command=self.save_settings_as)
         save_menu.add_command(label=current_translations["save_menu"]["import"], command=self.import_settings)
         self.menu_bar.add_cascade(label=current_translations["menu_labels"]["file"], menu=save_menu)
 
