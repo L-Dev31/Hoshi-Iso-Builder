@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  This XSD was made with the information written in
+  https://aerialx.github.io/rvlution.net/wiki/Patch_Format/
+  I... won't support params or ocarina/search patches for now
+  as I have not seen anyone using that in SMG modding
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">  
+  <!-- wiidisc element -->
+  <xs:element name="wiidisc">
+    <xs:complexType>      
+      <!-- wiidisc childs -->
+      <xs:sequence>
+                            
+        <!-- id element -->
+        <xs:element name="id" minOccurs="0">
+          <xs:complexType>
+            <!-- id childs -->
+            <xs:sequence>
+              
+              <!-- region element -->
+              <xs:element name="region" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <!-- region attribs -->
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <!-- 1 uppercase letter to identify the region -->
+                        <xs:pattern value="[A-Z]"/>
+                        <xs:maxLength value="1"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+                    
+            </xs:sequence>
+            <!-- id attribs -->
+            <xs:attribute name="game" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <!-- 3/4 letter uppercase code of the Wii game id -->
+                  <xs:pattern value="([0-9A-Z]){3,4}"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="developer" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <!-- 2 letter uppercase code of the Wii game developer id -->
+                  <xs:pattern value="([0-9A-Z]){2}"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="disc" type="pos_int" use="optional"/>
+            <xs:attribute name="version" type="pos_int" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+        
+        <!-- options element -->
+        <xs:element name="options" minOccurs="1">
+          <xs:complexType>
+            <!-- options childs -->
+            <xs:sequence>
+              
+              <!-- section element -->
+              <xs:element name="section" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                  <!-- section childs -->
+                  <xs:sequence>
+                    
+                    <!-- option element -->
+                    <xs:element name="option" minOccurs="1" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <!-- option childs -->
+                        <xs:sequence>
+                          
+                          <!-- choice element -->
+                          <xs:element name="choice" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <!-- choice childs -->
+                              <xs:sequence>
+                                
+                                <!-- patch element -->
+                                <xs:element name="patch" minOccurs="1" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <!-- patch attribs -->
+                                    <xs:attribute name="id" type="xs:string" use="required"/>
+                                  </xs:complexType>
+                                </xs:element>
+                              
+                              </xs:sequence>
+                              <!-- choice attribs -->
+                              <xs:attribute name="name" type="xs:string" use="required"/>
+                            </xs:complexType>
+                          </xs:element>
+                        
+                        </xs:sequence>
+                        <!-- option attribs -->
+                        <xs:attribute name="id" type="xs:string" use="optional"/>
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                        <xs:attribute name="default" use="optional">
+                          <xs:simpleType>
+                            <!-- 0 or 1 (I think) -->
+                            <xs:restriction base="pos_int">
+                              <xs:maxInclusive value="1"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                      </xs:complexType>
+                    </xs:element>
+                  
+                  </xs:sequence>
+                  <!-- section attribs -->
+                  <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+              </xs:element>
+              
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        
+        <!-- patch element -->
+        <xs:element name="patch" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          
+            <!-- patch childs -->
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+            
+                <!-- file element -->
+                <xs:element name="file" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <!-- file attribs -->
+                    <xs:attribute name="disc" type="xs:string" use="required"/>
+                    <xs:attribute name="external" type="xs:string" use="required"/>
+                    <xs:attribute name="resize" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="create" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="offset" type="hex_dec_int" use="optional"/>
+                    <xs:attribute name="length" type="hex_dec_int" use="optional"/>
+                  </xs:complexType>
+                </xs:element>
+                
+                <!-- folder element -->
+                <xs:element name="folder" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <!-- folder attribs -->
+                    <xs:attribute name="disc" type="xs:string" use="optional"/>
+                    <xs:attribute name="external" type="xs:string" use="required"/>
+                    <xs:attribute name="resize" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="create" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="recursive" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="length" type="hex_dec_int" use="optional"/>
+                  </xs:complexType>
+                </xs:element>
+                
+                <!-- savegame element -->
+                <xs:element name="savegame" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <!-- savegame attribs -->
+                    <xs:attribute name="external" type="xs:string" use="required"/>
+                    <xs:attribute name="clone" type="xs:boolean" use="optional"/>
+                  </xs:complexType>
+                </xs:element>
+              
+                <!-- memory element -->
+                <xs:element name="memory" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <!-- memory attribs -->
+                    <xs:attribute name="offset" type="hex_dec_int" use="required"/>
+                    <!-- honestly it is dumb that I cannot have a choice-like thing for attributes -->
+                    <xs:attribute name="value" type="hex_str" use="optional"/>
+                    <xs:attribute name="valuefile" type="xs:string" use="optional"/>
+                    <xs:attribute name="original" type="hex_str" use="optional"/>
+                  </xs:complexType>
+                </xs:element>
+              
+            </xs:choice>
+            <!-- patch attribs -->
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="root" type="xs:string" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+        
+      </xs:sequence>      
+      <!-- wiidisc attributes -->
+      <xs:attribute name="version" use="required">
+        <xs:simpleType>
+          <xs:restriction base="hex_dec_int">
+            <!-- Riivolution v1 only accepts version="1" XMLs -->
+            <xs:enumeration value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="root" type="xs:string" use="optional"/>   
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- custom data types -->
+  <!-- hex/dec integer -->
+  <xs:simpleType name="hex_dec_int">
+    <xs:restriction base="xs:string">
+      <!-- match this lol -->
+      <xs:pattern value="0x[0-9a-fA-F]+|[0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- positive integer -->
+  <xs:simpleType name="pos_int">
+    <xs:restriction base="xs:integer">
+      <!-- major or equal to 0 -->
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- hex string -->
+  <xs:simpleType name="hex_str">
+    <xs:restriction base="xs:string">
+      <!-- match this lol -->
+      <xs:pattern value="(0x)?([0-9a-fA-F]{2})+"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
