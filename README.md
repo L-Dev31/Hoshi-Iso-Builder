@@ -1,4 +1,4 @@
-![image](https://github.com/L-Dev31/Hoshi-Iso-Builder/assets/86838693/3146a1e4-dfc9-481e-816e-438fa81bc666)
+![image](https://github.com/user-attachments/assets/5f433421-7fc5-4b2a-963d-cb0b87fe5ca4)
 
 **Specifications needed**
 :
