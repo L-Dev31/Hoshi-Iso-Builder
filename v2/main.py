@@ -366,88 +366,76 @@ class HoshiIsoBuilder:
     
     def show_patch_selection(self, sections):
         selection_window = tk.Toplevel(self.root)
-        selection_window.title(self.localization.get_string('PatchSelection', 'title', 'Sélection des patches'))
+        selection_window.title("Patch Selection")
         selection_window.geometry("600x400")
         selection_window.transient(self.root)
         selection_window.grab_set()
-        
-        if self.current_theme == 'dark':
-            selection_window.configure(bg='#1B202D')
-        else:
-            selection_window.configure(bg='#f5f5f5')
-        
+
         main_frame = ttk.Frame(selection_window, padding=20)
         main_frame.pack(fill=tk.BOTH, expand=True)
-        
+
         scroll_frame = ttk.Frame(main_frame)
         scroll_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 20))
-        
+
         scrollbar = ttk.Scrollbar(scroll_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        
+
         canvas = tk.Canvas(scroll_frame, yscrollcommand=scrollbar.set)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        
+
         scrollbar.config(command=canvas.yview)
-        
+
         content_frame = ttk.Frame(canvas)
         canvas.create_window((0, 0), window=content_frame, anchor=tk.NW)
-        
+
         choice_vars = {}
-        
-        for i, section in enumerate(sections):
+
+        for section in sections:
             section_frame = ttk.Frame(content_frame)
-            section_frame.pack(fill=tk.X, pady=(10 if i > 0 else 0, 5))
-            
-            section_label = ttk.Label(section_frame, text=f"{self.localization.get_string('PatchSelection', 'section_label', 'Section')}: {section.name}", font=('Segoe UI', 10, 'bold'))
+            section_frame.pack(fill=tk.X, pady=(10, 5))
+
+            section_label = ttk.Label(section_frame, text=f"Section: {section.name}", font=('Segoe UI', 10, 'bold'))
             section_label.pack(anchor=tk.W)
-            
+
             for option in section.options:
                 option_frame = ttk.Frame(content_frame)
                 option_frame.pack(fill=tk.X, padx=20, pady=2)
-                
-                option_label = ttk.Label(option_frame, text=f"{self.localization.get_string('PatchSelection', 'option_label', 'Option')}: {option.name}", font=('Segoe UI', 9, 'italic'))
+
+                option_label = ttk.Label(option_frame, text=f"Option: {option.name}", font=('Segoe UI', 9, 'italic'))
                 option_label.pack(anchor=tk.W)
-                
+
                 for choice in option.choices:
                     choice_frame = ttk.Frame(content_frame)
                     choice_frame.pack(fill=tk.X, padx=40, pady=1)
-                    
-                    choice_vars[choice.name] = tk.BooleanVar(value=False)
-                    choice_check = ttk.Checkbutton(choice_frame, text=choice.name, variable=choice_vars[choice.name])
+
+                    choice_key = f"{option.name} - {choice.name}"
+                    choice_vars[choice_key] = tk.BooleanVar(value=False)
+                    choice_check = ttk.Checkbutton(choice_frame, text=choice_key, variable=choice_vars[choice_key])
                     choice_check.pack(anchor=tk.W)
-        
+
         content_frame.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
-        
+
         button_frame = ttk.Frame(main_frame)
         button_frame.pack(fill=tk.X)
-        
-        ttk.Button(
-            button_frame, 
-            text=self.localization.get_string('PatchSelection', 'apply_button', 'Appliquer'),
-            command=lambda: self.apply_patch_selection(selection_window, choice_vars)
-        ).pack(side=tk.RIGHT, padx=(10, 0))
-        
-        ttk.Button(
-            button_frame, 
-            text=self.localization.get_string('PatchSelection', 'cancel_button', 'Annuler'),
-            command=selection_window.destroy
-        ).pack(side=tk.RIGHT)
-        
+
+        ttk.Button(button_frame, text="Apply", command=lambda: self.apply_patch_selection(selection_window, choice_vars)).pack(side=tk.RIGHT, padx=(10, 0))
+        ttk.Button(button_frame, text="Cancel", command=selection_window.destroy).pack(side=tk.RIGHT)
+
         selection_window.update_idletasks()
         width = selection_window.winfo_width()
         height = selection_window.winfo_height()
         x = (selection_window.winfo_screenwidth() // 2) - (width // 2)
         y = (selection_window.winfo_screenheight() // 2) - (height // 2)
-        selection_window.geometry('{}x{}+{}+{}'.format(width, height, x, y))
-    
+        selection_window.geometry(f"{width}x{height}+{x}+{y}")
+
     def apply_patch_selection(self, window, choice_vars):
         self.selected_choices = []
-        for choice_name, var in choice_vars.items():
+        for choice_key, var in choice_vars.items():
             if var.get():
+                option_name, choice_name = choice_key.split(" - ")
                 self.selected_choices.append(choice_name)
-        
+                debug_log(f"Selected choice: {choice_name} from option: {option_name}")
         window.destroy()
         self.start_build_process()
     
@@ -493,12 +481,17 @@ class HoshiIsoBuilder:
             messagebox.showerror("Hoshi Iso Builder", f"Erreur lors de l'analyse des patches: {str(e)}")
     
     def start_build_process(self):
-        self.status_var.set(self.localization.get_string('Messages', 'build_start', 'Début de la construction...'))
-        self.progress_bar["value"] = 0
-        
-        build_thread = threading.Thread(target=self.build_process)
-        build_thread.daemon = True
-        build_thread.start()
+        debug_log(f"Selected choices: {self.selected_choices}")
+        result = apply_riiv_patches_wrapper(
+            self.iso_path.get(),
+            self.xml_path.get(),
+            self.mods_path.get(),
+            self.selected_choices
+        )
+        if result:
+            debug_log("Patch application completed successfully.")
+        else:
+            debug_log("Patch application failed.")
 
     def update_progress(self, value):
         self.progress_bar["value"] = value

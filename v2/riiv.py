@@ -338,14 +338,12 @@ def apply_riiv_patches(game_path, xml_path, mod_files_folder, choice_str_list):
                     fpath2 = rtn_def_param_str(ext_game_path + patch_type.attrib["disc"], game_id)
                     file_ops.cp_folder(fpath1, fpath2, False)
 
-    # Check if there are any memory patches in the selected patches
     has_memory_patches = any(
         patch_type.tag == "memory"
         for patch in patch_elems
         for patch_type in patch
     )
 
-    # Check if any memory patches require original data (to open ram_dump)
     memory_needs_original = any(
         patch_type.tag == "memory" and "original" in patch_type.attrib
         for patch in patch_elems
@@ -360,7 +358,6 @@ def apply_riiv_patches(game_path, xml_path, mod_files_folder, choice_str_list):
             return False
         ram_dump = open(ram_dump_path, "rb")
 
-    # Process memory patches if any exist
     if has_memory_patches:
         if not patch_memory_section(patch_elems, root, mod_files_folder, game_id, ram_dump):
             if ram_dump:

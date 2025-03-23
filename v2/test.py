@@ -2,9 +2,20 @@ import os
 import sys
 import subprocess
 
-DEFAULT_GAME_PATH = "F:\\smg_modding\\FILE\\GAME\\SMG2.wbfs"
-DEFAULT_XML_PATH = "F:\\smg_modding\\FILE\\MOD\\Super Mario Galaxy Zero\\riivolution\\SMG0-USA.xml"
-DEFAULT_MODS_PATH = "F:\\smg_modding\\FILE\\MOD\\Super Mario Galaxy Zero\\SMG0"
+selected = "smgrav"
+
+if selected == "smg0" :
+    DEFAULT_GAME_PATH = "F:\\smg_modding\\FILE\\GAME\\SMG2.wbfs"
+    DEFAULT_XML_PATH = "F:\\smg_modding\\FILE\\MOD\\Super Mario Galaxy Zero\\riivolution\\SMG0-USA.xml"
+    DEFAULT_MODS_PATH = "F:\\smg_modding\\FILE\\MOD\\Super Mario Galaxy Zero\\SMG0"
+elif selected == "smgrav":
+    DEFAULT_GAME_PATH = r"F:\smg_modding\FILE\GAME\SMG2.wbfs"
+    DEFAULT_XML_PATH = r"C:\Users\leoto\Downloads\SuperMarioGravity_NewDemo.xml"
+    DEFAULT_MODS_PATH = r"F:\smg_modding\FILE\MOD\SuperMarioGravity New Demo\SuperMarioGravity_NewDemo"
+elif selected == "nmg":
+    DEFAULT_GAME_PATH = r"F:\smg_modding\FILE\GAME\SMG2.wbfs"
+    DEFAULT_XML_PATH = r"F:\smg_modding\FILE\MOD\Neo Mario Galaxy\nmg"
+    DEFAULT_MODS_PATH = r"F:\smg_modding\FILE\MOD\Neo Mario Galaxy\riivolution\nmg.xml"
 
 WINDOWS, LINUX = range(2)
 SYSTEM_OS = WINDOWS if sys.platform == "win32" else LINUX
